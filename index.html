@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#6B00B8"/>
+  <meta name="description" content="ChiliDulz Alma — AI Wellness, Astrología y Frecuencias"/>
+  <title>ChiliDulz Alma</title>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png"/>
+  <link rel="shortcut icon" href="favicon.ico"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap');
+    :root{--red:#E63000;--orange:#FF8C00;--gold:#FFD700;--dark:#0D0D1A;--dark2:#1A1A2E;--light:#F8F5FF;--white:#FFF;--green:#25D366;--purple:#6B00B8;--purple2:#9B30FF;--indigo:#1a0a2e;--teal:#00C9A7;--pink:#FF6B9D;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',sans-serif;background:var(--light);color:var(--dark);max-width:480px;margin:0 auto;min-height:100vh;}
+    .lang-bar{background:var(--dark2);display:flex;justify-content:flex-end;padding:4px 12px;gap:2px;}
+    .lb{background:none;border:none;color:rgba(255,255,255,0.45);font-size:10px;font-weight:800;cursor:pointer;padding:4px 8px;border-radius:8px;letter-spacing:1px;}
+    .lb.active{background:var(--gold);color:var(--dark);}
+    /* INSTALL MODAL - universal, works on iOS + Android */
+    #install-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;padding:20px;}
+    #install-overlay.show{display:flex;}
+    .install-card{background:white;border-radius:24px;padding:28px 24px;max-width:340px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4);}
+    .install-app-icon{width:80px;height:80px;border-radius:20px;object-fit:cover;margin:0 auto 12px;display:block;box-shadow:0 4px 16px rgba(0,0,0,0.2);}
+    .install-app-icon-fallback{width:80px;height:80px;border-radius:20px;background:linear-gradient(135deg,var(--purple),var(--purple2));display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 12px;}
+    .install-card h2{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--dark);letter-spacing:1px;margin-bottom:6px;}
+    .install-card .ic-sub{font-size:13px;color:#666;line-height:1.5;margin-bottom:16px;}
+    .install-features{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;text-align:left;}
+    .if-row{display:flex;align-items:center;gap:10px;font-size:13px;color:#444;}
+    .if-icon{font-size:18px;flex-shrink:0;}
+    .btn-install-now{width:100%;background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;border:none;border-radius:14px;padding:15px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;cursor:pointer;margin-bottom:10px;box-shadow:0 4px 16px rgba(107,0,184,0.3);}
+    .btn-install-later{width:100%;background:#F0F0F0;color:#888;border:none;border-radius:14px;padding:12px;font-weight:600;cursor:pointer;font-size:13px;}
+    /* iOS specific instructions */
+    .ios-steps{background:#F8F5FF;border-radius:12px;padding:14px;margin-bottom:16px;text-align:left;display:none;}
+    .ios-steps p{font-size:12px;color:#555;font-weight:700;margin-bottom:8px;}
+    .ios-step{display:flex;align-items:center;gap:8px;font-size:12px;color:#444;margin-bottom:6px;}
+    .ios-step:last-child{margin-bottom:0;}
+    /* Already installed banner */
+    #install-prompt{display:none;}
+    .ip-inner{display:flex;align-items:center;gap:12px;}
+    .ip-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--purple),var(--purple2));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+    .ip-text{flex:1;}.ip-text h4{font-size:13px;font-weight:800;margin-bottom:1px;}.ip-text p{font-size:10px;opacity:0.7;}
+    .ip-btns{display:flex;gap:8px;margin-top:8px;}
+    .btn-ip{background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;border:none;border-radius:8px;padding:9px 18px;font-weight:800;font-size:12px;cursor:pointer;flex:1;}
+    .btn-ip-x{background:rgba(255,255,255,0.1);color:white;border:none;border-radius:8px;padding:9px 12px;font-size:12px;cursor:pointer;}
+    header{background:var(--dark2);position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(107,0,184,0.3);}
+    .hdr-main{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;}
+    .logo{cursor:pointer;user-select:none;}
+    .logo-t{font-family:'Bebas Neue',sans-serif;font-size:28px;color:white;letter-spacing:2px;line-height:1;}
+    .logo-t em{color:var(--gold);font-style:normal;}
+    .logo-s{color:var(--purple2);font-size:10px;font-weight:700;letter-spacing:3px;display:block;}
+    .wa-hdr{background:var(--green);color:white;border:none;border-radius:20px;padding:7px 12px;font-size:11px;font-weight:800;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;}
+    nav{background:#0a0a1e;display:flex;overflow-x:auto;border-top:1px solid rgba(155,48,255,0.2);}
+    nav::-webkit-scrollbar{display:none;}
+    nav button{flex-shrink:0;background:none;border:none;color:rgba(255,255,255,0.5);padding:9px 11px;font-size:10px;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.2s;}
+    nav button.active{color:var(--gold);border-bottom-color:var(--gold);}
+    .section{display:none;}.section.active{display:block;}
+    .hero{background:linear-gradient(160deg,var(--indigo) 0%,#2d0a4e 50%,var(--purple) 100%);color:white;padding:28px 20px;text-align:center;position:relative;overflow:hidden;}
+    .hero::before{content:'✨';position:absolute;font-size:180px;opacity:0.04;top:-30px;right:-30px;pointer-events:none;}
+    .hero-badge{display:inline-block;background:rgba(255,215,0,0.15);border:1px solid rgba(255,215,0,0.4);color:var(--gold);font-size:10px;font-weight:900;padding:4px 14px;border-radius:20px;letter-spacing:2px;margin-bottom:10px;}
+    .hero h1{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:3px;line-height:1;margin-bottom:8px;}
+    .hero h1 em{color:var(--gold);font-style:normal;}
+    .hero-sub{font-size:13px;opacity:0.85;line-height:1.6;margin-bottom:18px;}
+    .hero-stats{display:flex;gap:8px;justify-content:center;margin-bottom:18px;}
+    .hs{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:10px 12px;text-align:center;flex:1;}
+    .hs-v{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);}
+    .hs-l{font-size:8px;opacity:0.7;font-weight:700;letter-spacing:1px;margin-top:1px;}
+    .btn-start{background:linear-gradient(135deg,var(--gold),#FFA500);color:var(--dark);border:none;border-radius:25px;padding:14px 32px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;cursor:pointer;box-shadow:0 4px 20px rgba(255,215,0,0.3);}
+    .home-sec{padding:14px;}
+    .home-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+    .hc{background:white;border-radius:16px;padding:16px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,0.06);cursor:pointer;transition:transform 0.15s;}
+    .hc:active{transform:scale(0.97);}
+    .hc-icon{font-size:28px;margin-bottom:6px;}
+    .hc-title{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;margin-bottom:2px;}
+    .hc-sub{font-size:9px;color:#888;line-height:1.3;}
+    .hc-alma{background:linear-gradient(135deg,#EDE3FF,#F5EEFF);border:2px solid var(--purple2);}
+    .hc-alma .hc-title{color:var(--purple);}
+    .hc-astro{background:linear-gradient(135deg,#0a0a1e,#1a0a3e);}.hc-astro .hc-title{color:var(--gold);}.hc-astro .hc-sub{color:rgba(255,255,255,0.5);}
+    .hc-freq{background:linear-gradient(135deg,var(--indigo),#2d0a4e);}.hc-freq .hc-title{color:var(--gold);}.hc-freq .hc-sub{color:rgba(255,255,255,0.5);}
+    .snack-banner{background:linear-gradient(135deg,#1A0A0A,#3D0000);border-radius:16px;padding:16px;color:white;text-align:center;}
+    .sb-tag{display:inline-block;background:rgba(230,48,0,0.3);border:1px solid rgba(255,140,0,0.5);color:#FF8C00;font-size:9px;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:2px;margin-bottom:6px;}
+    .snack-banner h3{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);letter-spacing:1px;margin-bottom:4px;}
+    .snack-banner p{font-size:11px;opacity:0.8;margin-bottom:10px;line-height:1.5;}
+    .sf-row{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:10px;}
+    .sf{background:rgba(255,255,255,0.08);border-radius:8px;padding:3px 9px;font-size:10px;font-weight:700;}
+    .btn-notify{background:linear-gradient(135deg,var(--red),var(--orange));color:white;border:none;border-radius:10px;padding:9px 18px;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;cursor:pointer;}
+    .notif-bar{background:var(--indigo);border:1px solid rgba(155,48,255,0.3);color:white;margin:0 14px 12px;border-radius:12px;padding:12px 14px;display:none;align-items:flex-start;gap:10px;}
+    .btn-notif{background:var(--gold);color:var(--dark);border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:800;cursor:pointer;margin-top:6px;}
+    .btn-notif-x{background:none;border:none;color:rgba(255,255,255,0.4);font-size:18px;cursor:pointer;flex-shrink:0;}
+    .sec-top{background:linear-gradient(160deg,var(--indigo),#2d0a4e,var(--purple));padding:20px 20px 16px;text-align:center;color:white;}
+    .sec-top h2{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--gold);margin-bottom:4px;}
+    .sec-top p{font-size:12px;opacity:0.8;line-height:1.5;}
+    /* PROFILE */
+    .profile-card{background:white;margin:14px;border-radius:20px;padding:20px;box-shadow:0 4px 20px rgba(107,0,184,0.1);border:1px solid rgba(107,0,184,0.08);}
+    .profile-card h3{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--purple);letter-spacing:1px;margin-bottom:6px;}
+    .profile-card p{font-size:12px;color:#777;margin-bottom:16px;line-height:1.5;}
+    .pf-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+    .pf-full{margin-bottom:12px;}
+    .pf-lbl{display:block;font-size:10px;font-weight:800;color:var(--purple);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;}
+    .pf-inp{width:100%;border:2px solid #E8E8E8;border-radius:10px;padding:11px;font-size:14px;font-family:'Inter',sans-serif;color:var(--dark);-webkit-appearance:none;}
+    .pf-inp:focus{outline:none;border-color:var(--purple);}
+    .btn-save-profile{width:100%;background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;border:none;border-radius:12px;padding:14px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;cursor:pointer;}
+    .sign-card{background:linear-gradient(135deg,#EDE3FF,#F5EEFF);border-radius:16px;padding:16px;margin:0 14px 14px;text-align:center;border:1px solid rgba(107,0,184,0.15);}
+    .sign-big{font-size:52px;margin-bottom:4px;}
+    .sign-name{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--purple);letter-spacing:2px;}
+    .sign-rising{font-size:13px;color:var(--purple2);font-weight:700;margin-top:2px;}
+    .sign-dates{font-size:11px;color:#888;margin-top:3px;}
+    .sign-elem{font-size:12px;color:#666;margin-top:4px;}
+    .btn-edit-prof{background:none;border:1px solid var(--purple);color:var(--purple);border-radius:8px;padding:5px 14px;font-size:11px;font-weight:700;cursor:pointer;margin-top:10px;}
+    /* MOOD */
+    .mood-card{background:white;margin:0 14px 14px;border-radius:20px;padding:20px;box-shadow:0 4px 20px rgba(107,0,184,0.08);border:1px solid rgba(107,0,184,0.06);}
+    .mood-card h3{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--purple);letter-spacing:1px;margin-bottom:4px;}
+    .mood-card p{font-size:12px;color:#777;margin-bottom:14px;}
+    .streak-card{background:linear-gradient(135deg,#FFF4E0,#FFE8CC);margin:0 14px 14px;border-radius:18px;padding:16px;border:1px solid rgba(255,140,0,0.2);}
+    .streak-top{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+    .streak-flame{font-size:36px;line-height:1;}
+    .streak-num{font-family:'Bebas Neue',sans-serif;font-size:32px;color:#D2540B;line-height:1;}
+    .streak-lbl{font-size:11px;color:#A05A1E;font-weight:700;margin-top:1px;}
+    .streak-next{font-size:11px;color:#A05A1E;margin-left:auto;text-align:right;line-height:1.4;font-weight:600;}
+    .streak-next b{color:#D2540B;font-size:13px;}
+    .badge-row{display:flex;gap:6px;justify-content:space-between;}
+    .badge{flex:1;text-align:center;padding:7px 2px;border-radius:10px;background:rgba(255,255,255,0.5);border:1.5px solid rgba(210,84,11,0.15);opacity:0.4;}
+    .badge.unlocked{opacity:1;background:white;border-color:#FFD700;box-shadow:0 2px 6px rgba(255,165,0,0.25);}
+    .badge-icon{font-size:16px;}
+    .badge-day{font-size:8px;font-weight:800;color:#A05A1E;margin-top:1px;}
+    .streak-broken{background:linear-gradient(135deg,#F5EEFF,#EDE3FF);margin:0 14px 14px;border-radius:18px;padding:16px;text-align:center;border:1px solid rgba(107,0,184,0.15);display:none;}
+    .streak-broken .sb-icon{font-size:30px;margin-bottom:6px;}
+    .streak-broken h4{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--purple);letter-spacing:1px;margin-bottom:4px;}
+    .streak-broken p{font-size:12px;color:#777;line-height:1.5;}
+    /* SNACKS */
+    .snack-top{background:linear-gradient(160deg,#1A0000,#3D0000,#8B0000);color:white;padding:24px 20px;text-align:center;}
+    .snack-top h2{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;color:var(--gold);margin-bottom:4px;}
+    .snack-top p{font-size:12px;opacity:0.8;line-height:1.5;}
+    .delivery-banner{background:rgba(255,255,255,0.08);border:1px solid rgba(255,215,0,0.3);border-radius:10px;padding:10px 14px;margin-top:12px;font-size:11px;color:var(--gold);font-weight:700;line-height:1.6;}
+    .product-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px;}
+    .product-card{background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.1);cursor:pointer;transition:transform 0.15s;border:1px solid #F0EEF8;}
+    .product-card:active{transform:scale(0.97);}
+    .product-img{width:100%;height:130px;object-fit:cover;background:linear-gradient(135deg,#1A0A0A,#3D0000);display:flex;align-items:center;justify-content:center;font-size:52px;}
+    .product-img img{width:100%;height:130px;object-fit:cover;}
+    .product-info{padding:10px;}
+    .product-name{font-weight:800;font-size:13px;color:var(--dark);line-height:1.3;margin-bottom:3px;}
+    .product-desc{font-size:10px;color:#888;line-height:1.4;margin-bottom:8px;}
+    .product-price{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--red);margin-bottom:6px;}
+    .product-sizes{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;}
+    .size-btn{border:1px solid #E8E8E8;background:white;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700;cursor:pointer;color:#666;transition:all 0.15s;}
+    .size-btn.active{border-color:var(--red);background:var(--red);color:white;}
+    .btn-order-product{display:block;width:100%;background:linear-gradient(90deg,var(--red),var(--orange));color:white;border:none;padding:8px;font-size:11px;font-weight:800;cursor:pointer;letter-spacing:0.5px;}
+    /* ORDER MODAL */
+    #order-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:400;align-items:flex-end;justify-content:center;}
+    #order-modal.show{display:flex;}
+    .order-sheet{background:white;border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:24px 20px 40px;overflow-y:auto;max-height:92vh;}
+    .order-sheet h2{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--red);letter-spacing:1px;margin-bottom:4px;}
+    .order-sheet .os-sub{font-size:12px;color:#888;margin-bottom:16px;}
+    .order-selected{background:#FFF5F0;border:2px solid var(--red);border-radius:12px;padding:12px;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+    .os-product-name{font-weight:800;font-size:14px;color:var(--dark);flex:1;}
+    .os-product-price{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--red);}
+    .order-field{margin-bottom:12px;}
+    .order-field label{display:block;font-size:10px;font-weight:800;color:var(--red);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;}
+    .order-field input,.order-field select,.order-field textarea{width:100%;border:2px solid #E8E8E8;border-radius:10px;padding:11px;font-size:14px;font-family:'Inter',sans-serif;color:var(--dark);-webkit-appearance:none;background:white;}
+    .order-field input:focus,.order-field select:focus{outline:none;border-color:var(--red);}
+    .order-field textarea{height:60px;resize:none;}
+    .order-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .order-total{background:#FFF5F0;border-radius:12px;padding:12px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
+    .ot-label{font-size:12px;color:#666;font-weight:600;}
+    .ot-amount{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--red);}
+    .btn-send-order{width:100%;background:linear-gradient(135deg,#25D366,#128C7E);color:white;border:none;border-radius:14px;padding:16px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;cursor:pointer;box-shadow:0 4px 16px rgba(37,211,102,0.3);}
+    .btn-order-cancel{width:100%;background:#F0F0F0;color:#555;border:none;border-radius:14px;padding:13px;font-weight:700;cursor:pointer;font-size:13px;margin-top:8px;}
+    .no-products{text-align:center;padding:40px 20px;color:#888;}
+    .no-products .np-icon{font-size:48px;margin-bottom:10px;}
+    .no-products h3{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--dark);letter-spacing:1px;margin-bottom:6px;}
+    .no-products p{font-size:13px;line-height:1.5;}
+    .mood-scale{display:flex;gap:7px;justify-content:center;margin-bottom:14px;}
+    .mn{width:52px;height:52px;border-radius:14px;border:2px solid #E8E8E8;background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:all 0.15s;font-size:22px;}
+    .mn span{font-size:8px;font-weight:700;color:#BBB;margin-top:2px;}
+    .mn.active{border-color:var(--purple);background:linear-gradient(135deg,var(--purple),var(--purple2));box-shadow:0 4px 12px rgba(107,0,184,0.3);}
+    .mn.active span{color:rgba(255,255,255,0.8);}
+    .emo-label{font-size:10px;font-weight:800;color:var(--purple);margin-bottom:8px;letter-spacing:1px;}
+    .emo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:14px;}
+    .eb{border:2px solid #EEE;background:white;border-radius:10px;padding:7px 4px;font-size:18px;cursor:pointer;text-align:center;transition:all 0.15s;}
+    .eb span{display:block;font-size:8px;font-weight:700;color:#AAA;margin-top:2px;}
+    .eb.active{border-color:var(--purple2);background:linear-gradient(135deg,#EDE3FF,#F5EEFF);}
+    .btn-get-rec{width:100%;background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;border:none;border-radius:14px;padding:14px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;cursor:pointer;box-shadow:0 4px 16px rgba(107,0,184,0.3);}
+    .btn-get-rec:disabled{opacity:0.4;cursor:not-allowed;}
+    .ai-rec-card{background:linear-gradient(135deg,var(--indigo),#2d0a4e);margin:0 14px 14px;border-radius:20px;padding:20px;color:white;display:none;border:1px solid rgba(155,48,255,0.3);}
+    .ai-rec-card h3{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--gold);letter-spacing:1px;margin-bottom:10px;}
+    .ai-msg{font-size:14px;line-height:1.7;opacity:0.95;margin-bottom:14px;font-style:italic;border-left:3px solid var(--gold);padding-left:12px;}
+    .rec-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+    .rec-item{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:12px;}
+    .ri-icon{font-size:24px;margin-bottom:5px;}
+    .ri-label{font-size:9px;font-weight:800;opacity:0.6;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+    .ri-val{font-size:12px;font-weight:700;line-height:1.3;}
+    .btn-listen{width:100%;background:linear-gradient(135deg,var(--gold),#FFA500);color:var(--dark);border:none;border-radius:10px;padding:11px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;cursor:pointer;}
+    /* HISTORY */
+    .hist-card{background:white;margin:0 14px 14px;border-radius:20px;padding:18px;box-shadow:0 4px 20px rgba(0,0,0,0.05);border:1px solid rgba(107,0,184,0.06);}
+    .hist-card h3{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--dark);letter-spacing:1px;margin-bottom:10px;}
+    .period-tabs{display:flex;gap:6px;margin-bottom:12px;}
+    .ptab{flex:1;background:#F0F0F0;border:none;border-radius:8px;padding:7px;font-size:11px;font-weight:700;cursor:pointer;color:#777;transition:all 0.15s;}
+    .ptab.active{background:var(--purple);color:white;}
+    .mood-chart{display:flex;align-items:flex-end;gap:3px;height:90px;margin-bottom:12px;}
+    .mbar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;justify-content:flex-end;}
+    .mbar{width:100%;border-radius:5px 5px 0 0;background:linear-gradient(to top,var(--purple),var(--purple2));min-height:3px;transition:height 0.5s ease;}
+    .mbar-day{font-size:7px;color:#CCC;font-weight:700;}
+    .mbar-val{font-size:9px;color:var(--purple);font-weight:800;}
+    .hap-wrap{background:linear-gradient(135deg,#EDE3FF,#F5EEFF);border-radius:14px;padding:14px;text-align:center;margin-bottom:12px;}
+    .hap-num{font-family:'Bebas Neue',sans-serif;font-size:50px;color:var(--purple);line-height:1;}
+    .hap-lbl{font-size:11px;color:#888;font-weight:600;margin-top:2px;}
+    .hap-tr{font-size:12px;font-weight:700;margin-top:5px;}
+    .tr-up{color:var(--teal);}.tr-same{color:#AAA;}.tr-dn{color:var(--pink);}
+    .log-list{display:flex;flex-direction:column;gap:7px;}
+    .log-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:#FAFAFA;border-radius:12px;border:1px solid #F0F0F0;}
+    .li-icon{font-size:24px;flex-shrink:0;margin-top:2px;}
+    .li-info{flex:1;}
+    .li-emo{font-size:13px;font-weight:700;color:var(--dark);}
+    .li-time{font-size:10px;color:#BBB;margin-top:1px;}
+    .li-msg{font-size:11px;color:#666;margin-top:3px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+    .li-score{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--purple);flex-shrink:0;}
+    .prem-lock{background:linear-gradient(135deg,#1A0A2E,#2d0a4e);border-radius:14px;padding:16px;text-align:center;color:white;margin-top:10px;display:none;}
+    .prem-lock .pl-icon{font-size:30px;margin-bottom:6px;}
+    .prem-lock h4{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--gold);letter-spacing:1px;margin-bottom:4px;}
+    .prem-lock p{font-size:11px;opacity:0.75;line-height:1.5;margin-bottom:10px;}
+    .btn-unlock{background:linear-gradient(135deg,var(--gold),#FFA500);color:var(--dark);border:none;border-radius:10px;padding:11px 20px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;cursor:pointer;width:100%;}
+    /* ASTROLOGY */
+    .astro-top{background:linear-gradient(160deg,#050510,#0a0a2e,#0a1040);padding:24px 20px;text-align:center;color:white;}
+    .astro-top h2{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--gold);margin-bottom:4px;}
+    .astro-top p{font-size:12px;opacity:0.75;line-height:1.5;}
+    .astro-no-profile{background:white;margin:14px;border-radius:20px;padding:24px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,0.06);}
+    .astro-no-profile .anp-icon{font-size:52px;margin-bottom:12px;}
+    .astro-no-profile h3{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--purple);letter-spacing:1px;margin-bottom:8px;}
+    .astro-no-profile p{font-size:13px;color:#666;line-height:1.6;margin-bottom:16px;}
+    .btn-setup{background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;border:none;border-radius:12px;padding:13px 24px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;cursor:pointer;}
+    .astro-content{padding:14px;display:none;}
+    .horo-card{background:linear-gradient(135deg,#050510,#0a0a2e);border-radius:20px;padding:20px;color:white;margin-bottom:14px;border:1px solid rgba(255,215,0,0.15);}
+    .horo-header{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+    .horo-sign-icon{font-size:44px;}
+    .horo-sign-name{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold);letter-spacing:2px;}
+    .horo-rising{font-size:11px;color:var(--purple2);font-weight:700;margin-top:2px;}
+    .horo-today-lbl{font-size:10px;font-weight:800;color:var(--purple2);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+    .horo-text{font-size:13px;line-height:1.7;opacity:0.9;margin-bottom:14px;}
+    .horo-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+    .hm{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px;text-align:center;}
+    .hm-icon{font-size:18px;margin-bottom:3px;}
+    .hm-val{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);}
+    .hm-lbl{font-size:9px;opacity:0.6;font-weight:700;letter-spacing:0.5px;}
+    .horo-freq{background:rgba(155,48,255,0.2);border:1px solid rgba(155,48,255,0.3);border-radius:12px;padding:12px;text-align:center;margin-bottom:10px;}
+    .horo-freq-lbl{font-size:9px;font-weight:800;color:var(--purple2);letter-spacing:1px;margin-bottom:4px;}
+    .horo-freq-val{font-size:14px;font-weight:800;color:white;}
+    .btn-hear{width:100%;background:linear-gradient(135deg,var(--gold),#FFA500);color:var(--dark);border:none;border-radius:10px;padding:11px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;cursor:pointer;}
+    .compat-card{background:white;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-bottom:14px;border:1px solid rgba(107,0,184,0.08);}
+    .compat-card h3{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--purple);letter-spacing:1px;margin-bottom:6px;}
+    .compat-card p{font-size:12px;color:#777;margin-bottom:12px;}
+    .compat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}
+    .cs{border:2px solid #EEE;background:white;border-radius:12px;padding:8px 4px;text-align:center;cursor:pointer;transition:all 0.15s;}
+    .cs.best{border-color:var(--gold);background:linear-gradient(135deg,#FFF8E1,#FFFDE7);}
+    .cs.good{border-color:var(--teal);background:linear-gradient(135deg,#E0F8F5,#F0FFFE);}
+    .cs.hard{border-color:var(--pink);background:linear-gradient(135deg,#FFE8F0,#FFF5F8);}
+    .cs-icon{font-size:20px;margin-bottom:2px;}
+    .cs-name{font-size:8px;font-weight:800;color:#666;}
+    .compat-legend{display:flex;gap:12px;justify-content:center;font-size:10px;color:#888;margin-bottom:12px;}
+    .cl-item{display:flex;align-items:center;gap:4px;font-weight:600;}
+    .cl-dot{width:8px;height:8px;border-radius:50%;}
+    .compat-result{background:linear-gradient(135deg,#EDE3FF,#F5EEFF);border-radius:14px;padding:16px;display:none;}
+    .cr-signs{font-size:28px;margin-bottom:4px;}
+    .cr-title{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--purple);letter-spacing:1px;margin-bottom:6px;}
+    .cr-score{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--purple2);line-height:1;margin-bottom:6px;}
+    .cr-text{font-size:12px;color:#555;line-height:1.5;}
+    /* PREMIUM */
+    .prem-card{background:linear-gradient(135deg,var(--gold),#FFA500);margin:0 14px 14px;border-radius:20px;padding:18px;}
+    .prem-card h3{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--dark);letter-spacing:1px;margin-bottom:4px;}
+    .prem-card p{font-size:12px;color:rgba(0,0,0,0.7);line-height:1.5;margin-bottom:10px;}
+    .prem-feats{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+    .pf-feat{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--dark);}
+    .btn-prem{width:100%;background:var(--dark2);color:var(--gold);border:none;border-radius:12px;padding:13px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;cursor:pointer;}
+    /* PREMIUM MODAL */
+    #prem-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:400;align-items:flex-end;justify-content:center;}
+    #prem-modal.show{display:flex;}
+    .pm-sheet{background:white;border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:28px 24px 40px;overflow-y:auto;max-height:90vh;}
+    .pm-sheet h2{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--purple);letter-spacing:1px;text-align:center;margin-bottom:4px;}
+    .pm-sub{font-size:13px;color:#666;text-align:center;margin-bottom:18px;}
+    .pm-feats{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;}
+    .pmf{display:flex;align-items:center;gap:12px;padding:12px;background:#F8F5FF;border-radius:12px;}
+    .pmf-icon{font-size:22px;flex-shrink:0;}
+    .pmf-t{font-size:13px;font-weight:800;color:var(--dark);margin-bottom:2px;}
+    .pmf-s{font-size:11px;color:#777;}
+    .pm-price{text-align:center;margin-bottom:16px;}
+    .pm-price .ppa{font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--purple);line-height:1;}
+    .pm-price .ppp{font-size:12px;color:#888;}
+    .btn-pm-wa{width:100%;background:var(--green);color:white;border:none;border-radius:14px;padding:16px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;cursor:pointer;margin-bottom:8px;}
+    .btn-pm-cl{width:100%;background:#F0F0F0;color:#555;border:none;border-radius:14px;padding:13px;font-weight:700;cursor:pointer;font-size:13px;}
+    /* FREQUENCIES */
+    .freq-top{background:linear-gradient(160deg,#0a0a1a,var(--indigo),#2d0a4e);color:white;padding:20px;text-align:center;}
+    .freq-top h2{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--gold);margin-bottom:4px;}
+    .freq-top p{font-size:11px;opacity:0.75;line-height:1.5;}
+    .cat-tabs{display:flex;overflow-x:auto;gap:7px;padding:12px 14px;background:white;border-bottom:1px solid #EEE;}
+    .cat-tabs::-webkit-scrollbar{display:none;}
+    .ctab{flex-shrink:0;background:#F0F0F0;border:none;border-radius:20px;padding:6px 13px;font-size:10px;font-weight:800;cursor:pointer;color:#666;transition:all 0.15s;white-space:nowrap;}
+    .ctab.active{background:var(--purple);color:white;}
+    .freq-list{padding:14px;display:flex;flex-direction:column;gap:10px;}
+    .fc{background:white;border-radius:16px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.06);border:1px solid #F0EEF8;}
+    .fc-top{display:flex;align-items:center;gap:12px;padding:14px;}
+    .fc-icon{width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,var(--indigo),var(--purple));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+    .fc-title{font-weight:800;font-size:13px;color:var(--dark);line-height:1.3;margin-bottom:2px;}
+    .fc-hz{font-size:10px;font-weight:700;color:var(--purple);letter-spacing:0.5px;margin-bottom:2px;}
+    .fc-benefit{font-size:10px;color:#888;line-height:1.3;}
+    .fc-prem-badge{font-size:8px;font-weight:800;color:var(--gold);background:var(--purple);padding:2px 6px;border-radius:8px;margin-left:4px;vertical-align:middle;}
+    .fc-desc{font-size:11px;color:#555;padding:0 14px 10px;line-height:1.5;}
+    .fc-actions{padding:0 14px 14px;display:flex;gap:8px;}
+    .btn-dl{flex:1;background:linear-gradient(135deg,var(--indigo),var(--purple));color:white;border:none;border-radius:10px;padding:10px;font-size:11px;font-weight:800;cursor:pointer;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:5px;}
+    .btn-dl-prem{flex:1;background:linear-gradient(135deg,var(--gold),#FFA500);color:var(--dark);border:none;border-radius:10px;padding:10px;font-size:11px;font-weight:800;cursor:pointer;}
+    .fc-dls{font-size:9px;color:#CCC;text-align:right;padding:0 14px 10px;}
+    /* COMMUNITY */
+    .com-top{background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;padding:24px 20px;text-align:center;}
+    .com-top h2{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;margin-bottom:4px;}
+    .com-section{padding:14px;}
+    .com-card{background:white;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);margin-bottom:12px;}
+    .com-head{background:var(--dark2);color:white;padding:14px 16px;}
+    .com-head h3{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;}
+    .com-body{padding:16px;}
+    .ben-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;font-size:12px;color:#444;line-height:1.4;}
+    .fg{margin-bottom:11px;}
+    .fg label{display:block;font-size:10px;font-weight:800;color:var(--purple);margin-bottom:4px;text-transform:uppercase;}
+    .fg input{width:100%;border:2px solid #E8E8E8;border-radius:10px;padding:11px;font-size:14px;font-family:'Inter',sans-serif;color:var(--dark);-webkit-appearance:none;}
+    .fg input:focus{outline:none;border-color:var(--purple);}
+    .btn-wa-join{display:block;width:100%;background:var(--green);color:white;border:none;border-radius:12px;padding:14px;font-size:18px;font-weight:900;cursor:pointer;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;margin-top:12px;}
+    /* OVERLAYS */
+    .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;align-items:center;justify-content:center;padding:24px;}
+    .overlay.show{display:flex;}
+    .ov-card{background:white;border-radius:20px;padding:30px 24px;text-align:center;max-width:320px;width:100%;}
+    .ov-icon{font-size:52px;margin-bottom:10px;}
+    .ov-card h2{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--purple);letter-spacing:1px;margin-bottom:8px;}
+    .ov-card p{font-size:13px;color:#555;line-height:1.6;margin-bottom:18px;}
+    .btn-ov-close{background:var(--purple);color:white;border:none;border-radius:10px;padding:12px 28px;font-weight:800;cursor:pointer;font-size:14px;}
+    /* ADMIN */
+    #admin-login{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:500;align-items:center;justify-content:center;padding:24px;}
+    #admin-login.show{display:flex;}
+    .al-card{background:white;border-radius:20px;padding:28px 24px;width:100%;max-width:340px;text-align:center;}
+    .al-card h2{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--purple);letter-spacing:1px;margin-bottom:4px;}
+    .al-card p{font-size:12px;color:#888;margin-bottom:16px;}
+    .al-card input{width:100%;border:2px solid #E8E8E8;border-radius:10px;padding:12px;font-size:16px;margin-bottom:10px;text-align:center;letter-spacing:4px;}
+    .al-card input:focus{outline:none;border-color:var(--purple);}
+    .btn-al-login{width:100%;background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;border:none;border-radius:10px;padding:13px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;cursor:pointer;margin-bottom:8px;}
+    .btn-al-cancel{width:100%;background:#F0F0F0;color:#555;border:none;border-radius:10px;padding:11px;font-weight:700;cursor:pointer;font-size:13px;}
+    .al-err{color:var(--red);font-size:12px;margin-bottom:8px;display:none;}
+    #admin-panel{display:none;}
+    #admin-panel.show{display:block;}
+    .adm-hdr{background:var(--dark2);color:white;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+    .adm-hdr h2{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);}
+    .btn-adm-out{background:var(--red);color:white;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;}
+    .adm-body{padding:14px;}
+    .adm-sec{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--dark);letter-spacing:1px;margin:14px 0 8px;padding-bottom:3px;border-bottom:2px solid var(--purple);}
+    .adm-tip{background:#F8F5FF;border-left:3px solid var(--purple);padding:10px 12px;border-radius:0 8px 8px 0;font-size:11px;color:#555;margin-bottom:12px;line-height:1.5;}
+    .sync-st{text-align:center;font-size:11px;padding:7px 12px;border-radius:8px;margin-bottom:10px;font-weight:700;}
+    .sok{background:#E8F5E9;color:#2E7D32;}.serr{background:#FFEBEE;color:#C62828;}.sload{background:#EDE3FF;color:var(--purple);}
+    .adm-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+    .adm-item{background:white;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.05);border:1px solid #F0EEF8;}
+    .adm-item-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:5px;}
+    .adm-item-name{font-weight:800;font-size:13px;color:var(--dark);flex:1;line-height:1.3;}
+    .adm-item-hz{font-size:10px;color:var(--purple);font-weight:700;margin-left:8px;flex-shrink:0;}
+    .adm-item-desc{font-size:10px;color:#AAA;margin-bottom:8px;}
+    .adm-btns{display:flex;gap:6px;}
+    .btn-ae{background:var(--purple);color:white;border:none;border-radius:6px;padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer;}
+    .btn-ad{background:#FF4444;color:white;border:none;border-radius:6px;padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer;}
+    .btn-adm-add{width:100%;background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;border:none;border-radius:10px;padding:12px;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;cursor:pointer;margin-bottom:8px;}
+    .btn-adm-view{width:100%;background:var(--dark2);color:white;border:none;border-radius:10px;padding:11px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;cursor:pointer;margin-bottom:18px;}
+    .camp-box{background:white;border-radius:12px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,0.05);margin-bottom:12px;}
+    .camp-box h3{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--dark);letter-spacing:1px;margin-bottom:10px;}
+    .cf{margin-bottom:9px;}
+    .cf label{display:block;font-size:10px;font-weight:800;color:var(--purple);margin-bottom:3px;text-transform:uppercase;}
+    .cf input,.cf textarea{width:100%;border:2px solid #E8E8E8;border-radius:8px;padding:9px;font-size:13px;font-family:'Inter',sans-serif;}
+    .cf textarea{height:65px;resize:none;}
+    .btn-send{width:100%;background:linear-gradient(135deg,#1a8a3a,#0d5c27);color:white;border:none;border-radius:10px;padding:12px;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;cursor:pointer;}
+    .sub-box{background:var(--indigo);color:white;border-radius:10px;padding:12px;text-align:center;margin-bottom:12px;}
+    .sub-box .snum{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);line-height:1;}
+    .sub-box p{font-size:10px;opacity:0.75;margin-top:2px;}
+    .camp-hist{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+    .ch-it{background:white;border-radius:8px;padding:10px 12px;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
+    .ch-it h4{font-size:12px;font-weight:800;margin-bottom:2px;}
+    .ch-it p{font-size:10px;color:#888;}
+    .ch-it .meta{display:flex;justify-content:space-between;margin-top:4px;font-size:9px;color:#CCC;}
+    #edit-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:600;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;}
+    #edit-modal.show{display:flex;}
+    .em-card{background:white;border-radius:18px;padding:20px;width:100%;max-width:440px;margin:auto;}
+    .em-card h3{font-family:'Bebas Neue',sans-serif;font-size:19px;color:var(--purple);letter-spacing:1px;margin-bottom:12px;}
+    .ef{margin-bottom:10px;}
+    .ef label{display:block;font-size:10px;font-weight:800;color:var(--purple);margin-bottom:3px;text-transform:uppercase;}
+    .ef input,.ef select,.ef textarea{width:100%;border:2px solid #E8E8E8;border-radius:8px;padding:9px;font-size:13px;font-family:'Inter',sans-serif;}
+    .ef input:focus,.ef select:focus{outline:none;border-color:var(--purple);}
+    .ef textarea{height:60px;resize:none;}
+    .em-btns{display:flex;gap:8px;margin-top:12px;}
+    .btn-em-save{flex:1;background:linear-gradient(135deg,var(--purple),var(--purple2));color:white;border:none;border-radius:10px;padding:12px;font-family:'Bebas Neue',sans-serif;font-size:15px;cursor:pointer;}
+    .btn-em-cancel{flex:1;background:#F0F0F0;color:#555;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;font-size:12px;}
+    .pwd-sec{background:white;border-radius:12px;padding:14px;margin-bottom:24px;}
+    .loading-box{text-align:center;padding:36px 20px;color:#AAA;font-size:13px;}
+    .spinner{width:32px;height:32px;border:3px solid #EEE;border-top-color:var(--purple);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .bottom-pad{height:32px;}
+  </style>
+</head>
+<body>
+
+<!-- LANG BAR -->
+<div class="lang-bar">
+  <button class="lb active" onclick="setLang('es')" id="btn-es">ES</button>
+  <button class="lb" onclick="setLang('en')" id="btn-en">EN</button>
+  <button class="lb" onclick="setLang('pt')" id="btn-pt">PT</button>
+</div>
+
+<!-- PWA INSTALL OVERLAY - works on iOS + Android + Desktop -->
+<div id="install-overlay">
+  <div class="install-card">
+    <img class="install-app-icon" src="icon-192.png" onerror="this.style.display='none';document.getElementById('icon-fallback').style.display='flex';" alt="ChiliDulz"/>
+    <div class="install-app-icon-fallback" id="icon-fallback" style="display:none;">✨</div>
+    <h2>ChiliDulz Alma</h2>
+    <p class="ic-sub" id="ic-sub">Instala la app gratis en tu celular para acceso rápido, notificaciones y tu horóscopo diario.</p>
+    <div class="install-features">
+      <div class="if-row"><span class="if-icon">✨</span><span id="if1">Alma AI — Bienestar mental personalizado</span></div>
+      <div class="if-row"><span class="if-icon">🔮</span><span id="if2">Horóscopo diario con tu signo y ascendente</span></div>
+      <div class="if-row"><span class="if-icon">🎵</span><span id="if3">60+ frecuencias Solfeggio gratis</span></div>
+      <div class="if-row"><span class="if-icon">🔔</span><span id="if4">Notificaciones de nuevas frecuencias y ofertas</span></div>
+    </div>
+    <!-- Android Chrome: native install button -->
+    <button class="btn-install-now" id="btn-install-now" onclick="triggerInstall()" style="display:none;">📲 <span id="install-btn-text">INSTALAR APP — GRATIS</span></button>
+    <!-- iOS Safari: manual instructions -->
+    <div class="ios-steps" id="ios-steps">
+      <p id="ios-title">📱 Instalar en iPhone / iPad:</p>
+      <div class="ios-step">1️⃣ <span id="ios-step1">Toca el botón compartir <strong>⎙</strong> en Safari</span></div>
+      <div class="ios-step">2️⃣ <span id="ios-step2">Selecciona <strong>"Agregar a pantalla de inicio"</strong></span></div>
+      <div class="ios-step">3️⃣ <span id="ios-step3">Toca <strong>"Agregar"</strong> — ¡listo!</span></div>
+    </div>
+    <button class="btn-install-later" onclick="dismissInstall()" id="ip-later">Ahora no · Recordar después</button>
+  </div>
+</div>
+<!-- Legacy hidden (kept for compatibility) -->
+<div id="install-prompt" style="display:none;"></div>
+
+<!-- PREMIUM MODAL -->
+<div id="prem-modal">
+  <div class="pm-sheet">
+    <div style="text-align:center;font-size:36px;margin-bottom:6px;">⭐</div>
+    <h2>ALMA PREMIUM</h2>
+    <p class="pm-sub" id="pm-sub">Desbloquea tu bienestar completo con IA</p>
+    <div class="pm-feats">
+      <div class="pmf"><div class="pmf-icon">📊</div><div><div class="pmf-t" id="pmf1t">Historial completo 30 días</div><div class="pmf-s" id="pmf1s">Analiza patrones de bienestar a largo plazo</div></div></div>
+      <div class="pmf"><div class="pmf-icon">🧠</div><div><div class="pmf-t" id="pmf2t">Análisis IA profundo</div><div class="pmf-s" id="pmf2s">Insights y recomendaciones semanales personalizadas</div></div></div>
+      <div class="pmf"><div class="pmf-icon">🔮</div><div><div class="pmf-t" id="pmf3t">Carta Astral completa</div><div class="pmf-s" id="pmf3s">Ascendente, Luna y análisis astrológico profundo</div></div></div>
+      <div class="pmf"><div class="pmf-icon">🎵</div><div><div class="pmf-t" id="pmf4t">Frecuencias Premium exclusivas</div><div class="pmf-s" id="pmf4s">Acceso a toda la biblioteca de 60+ frecuencias</div></div></div>
+      <div class="pmf"><div class="pmf-icon">🌶️</div><div><div class="pmf-t" id="pmf5t">Snack ChiliDulz mensual</div><div class="pmf-s" id="pmf5s">Una sorpresa de snacks a tu puerta cada mes</div></div></div>
+    </div>
+    <div class="pm-price"><div class="ppa">$9.99</div><div class="ppp" id="ppp">/mes · Cancela cuando quieras</div></div>
+    <button class="btn-pm-wa" onclick="subscribePremium()">💬 <span id="pm-wa-btn">SUSCRIBIRME POR WHATSAPP</span></button>
+    <button class="btn-pm-cl" onclick="closePremModal()" id="pm-cl-btn">Tal vez después</button>
+  </div>
+</div>
+
+<!-- CUSTOMER APP -->
+<div id="customer-app">
+  <header>
+    <div class="hdr-main">
+      <div class="logo" id="logo-tap">
+        <div class="logo-t">Chili<em>Dulz</em></div>
+        <div class="logo-s">★ ALMA AI WELLNESS ★</div>
+      </div>
+      <a class="wa-hdr" href="https://wa.me/573016880127" target="_blank">💬 WhatsApp</a>
+    </div>
+    <nav>
+      <button class="active" onclick="showSection('inicio')">🏠 <span id="nav-home">Inicio</span></button>
+      <button onclick="showSection('alma')">✨ Alma</button>
+      <button onclick="showSection('astro')">🔮 <span id="nav-astro">Astro</span></button>
+      <button onclick="showSection('snacks')">🌶️ <span id="nav-snacks">Snacks</span></button>
+      <button onclick="showSection('frecuencias')">🎵 <span id="nav-freq">Frecuencias</span></button>
+      <button onclick="showSection('comunidad')">💬 <span id="nav-com">Comunidad</span></button>
+    </nav>
+  </header>
+
+  <!-- INICIO -->
+  <div id="inicio" class="section active">
+    <div class="hero">
+      <div class="hero-badge" id="hero-badge">✨ ALMA AI · BIENESTAR + ASTROLOGÍA</div>
+      <h1>Chili<em>Dulz</em><br>ALMA</h1>
+      <div class="hero-sub" id="hero-sub">Tu compañera de bienestar mental con IA. Ánimo · Astrología · Frecuencias.</div>
+      <div class="hero-stats">
+        <div class="hs"><div class="hs-v">60+</div><div class="hs-l" id="hs1">FRECUENCIAS</div></div>
+        <div class="hs"><div class="hs-v">12</div><div class="hs-l" id="hs2">SIGNOS</div></div>
+        <div class="hs"><div class="hs-v">AI</div><div class="hs-l" id="hs3">PERSONALIZADA</div></div>
+      </div>
+      <button class="btn-start" onclick="showSection('alma')" id="hero-cta">✨ COMENZAR GRATIS</button>
+    </div>
+    <div id="notif-bar" class="notif-bar">
+      <div style="font-size:22px;flex-shrink:0;">🔔</div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px;" id="nb-title">¡Activa las notificaciones!</div>
+        <div style="font-size:11px;opacity:0.75;" id="nb-desc">Recibe nuevas frecuencias y tu horóscopo diario.</div>
+        <button class="btn-notif" onclick="requestNotifPerm()" id="nb-btn">✅ ACTIVAR</button>
+      </div>
+      <button class="btn-notif-x" onclick="document.getElementById('notif-bar').style.display='none'">✕</button>
+    </div>
+    <div class="home-sec">
+      <div class="home-grid">
+        <div class="hc hc-alma" onclick="showSection('alma')">
+          <div class="hc-icon">✨</div>
+          <div class="hc-title">ALMA AI</div>
+          <div class="hc-sub" id="hc-alma-sub">Bienestar mental con IA</div>
+        </div>
+        <div class="hc hc-astro" onclick="showSection('astro')">
+          <div class="hc-icon" style="color:var(--gold);">🔮</div>
+          <div class="hc-title">ASTROLOGÍA</div>
+          <div class="hc-sub" id="hc-astro-sub">Horóscopo + compatibilidad</div>
+        </div>
+        <div class="hc hc-freq" onclick="showSection('frecuencias')">
+          <div class="hc-icon" style="color:var(--gold);">🎵</div>
+          <div class="hc-title">FRECUENCIAS</div>
+          <div class="hc-sub" id="hc-freq-sub">60+ MP3 gratis</div>
+        </div>
+        <div class="hc" onclick="showSection('comunidad')">
+          <div class="hc-icon">💬</div>
+          <div class="hc-title" id="hc-com-t">COMUNIDAD</div>
+          <div class="hc-sub" id="hc-com-s">Únete · ofertas exclusivas</div>
+        </div>
+      </div>
+      <div class="snack-banner">
+        <div class="sb-tag" id="sb-tag">🌶️ MUY PRONTO</div>
+        <h3>CHILIDULZ SNACKS</h3>
+        <p id="sb-desc">Maní picante chili-lima + dulces. Entrega mismo día via Rappi y DiDi en Bogotá.</p>
+        <div class="sf-row">
+          <span class="sf">🐻 Ositos</span><span class="sf">☁️ Marshmallow</span>
+          <span class="sf">🫐 Cranberry</span><span class="sf">🍫 Chocolate</span><span class="sf">😜 Agridulce</span>
+        </div>
+        <button class="btn-notify" onclick="notifySnack()" id="sb-btn">🔔 NOTIFÍCAME</button>
+      </div>
+    </div>
+    <div class="bottom-pad"></div>
+  </div>
+
+  <!-- ALMA -->
+  <div id="alma" class="section">
+    <div class="sec-top">
+      <div style="font-size:38px;margin-bottom:6px;">✨</div>
+      <h2>ALMA CHILIDULZ</h2>
+      <p id="alma-sub">Tu compañera de bienestar mental con IA</p>
+    </div>
+
+    <!-- PROFILE SETUP -->
+    <div id="profile-setup-block">
+      <div class="profile-card">
+        <h3 id="ps-title">CREA TU PERFIL ALMA</h3>
+        <p id="ps-desc">Tu fecha, hora y ciudad de nacimiento nos permiten calcular tu signo solar y ascendente para un horóscopo completamente personalizado con las frecuencias perfectas para ti.</p>
+        <div class="pf-full">
+          <label class="pf-lbl" id="ps-name-lbl">Tu nombre</label>
+          <input type="text" class="pf-inp" id="ps-name" placeholder="¿Cómo te llamas?"/>
+        </div>
+        <div class="pf-row">
+          <div>
+            <label class="pf-lbl" id="ps-bdate-lbl">Fecha de nacimiento</label>
+            <input type="date" class="pf-inp" id="ps-bdate"/>
+          </div>
+          <div>
+            <label class="pf-lbl" id="ps-btime-lbl">Hora de nacimiento</label>
+            <input type="time" class="pf-inp" id="ps-btime"/>
+          </div>
+        </div>
+        <div class="pf-full">
+          <label class="pf-lbl" id="ps-bcity-lbl">Ciudad de nacimiento</label>
+          <input type="text" class="pf-inp" id="ps-bcity" placeholder="Ej: Bogotá, Colombia"/>
+        </div>
+        <div style="background:#FFF8E1;border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:11px;color:#666;line-height:1.5;">
+          🔒 <strong id="ps-privacy">Tu información es privada y solo se usa para personalizar tu experiencia.</strong>
+        </div>
+        <button class="btn-save-profile" onclick="saveProfile()" id="ps-save-btn">✨ GUARDAR MI PERFIL ASTRAL</button>
+      </div>
+    </div>
+
+    <!-- SIGN DISPLAY (after profile saved) -->
+    <div id="sign-display-block" style="display:none;">
+      <div class="sign-card">
+        <div class="sign-big" id="sd-emoji">♈</div>
+        <div class="sign-name" id="sd-sun-name">Aries</div>
+        <div class="sign-rising" id="sd-rising">↑ Ascendente: Calculando...</div>
+        <div class="sign-dates" id="sd-dates">21 Mar — 19 Abr</div>
+        <div class="sign-elem" id="sd-elem">🔥 Fuego · Marte</div>
+        <button class="btn-edit-prof" onclick="editProfile()" id="sd-edit-btn">✏️ Editar perfil</button>
+      </div>
+    </div>
+
+    <!-- STREAK -->
+    <div class="streak-card" id="streak-card" style="display:none;">
+      <div class="streak-top">
+        <div class="streak-flame" id="streak-flame">🔥</div>
+        <div>
+          <div class="streak-num" id="streak-num">0</div>
+          <div class="streak-lbl" id="streak-lbl">días seguidos</div>
+        </div>
+        <div class="streak-next" id="streak-next-wrap">
+          <span id="streak-next-lbl">Próxima medalla:</span><br>
+          <b id="streak-next-val">3 días</b>
+        </div>
+      </div>
+      <div class="badge-row" id="badge-row"></div>
+    </div>
+    <div class="streak-broken" id="streak-broken">
+      <div class="sb-icon">🌙</div>
+      <h4 id="sb-title">¡Tu racha te espera!</h4>
+      <p id="sb-desc">Registra tu ánimo hoy para empezar una nueva racha de bienestar.</p>
+    </div>
+
+    <!-- MOOD CHECK-IN -->
+    <div class="mood-card">
+      <h3 id="mc-title">¿CÓMO TE SIENTES HOY?</h3>
+      <p id="mc-sub">Registra tu estado de ánimo y recibe recomendaciones personalizadas de IA</p>
+      <div class="mood-scale">
+        <div class="mn" onclick="selMood(1)" id="m1">😔<span id="ms1">Mal</span></div>
+        <div class="mn" onclick="selMood(2)" id="m2">😕<span id="ms2">Bajo</span></div>
+        <div class="mn" onclick="selMood(3)" id="m3">😐<span id="ms3">Bien</span></div>
+        <div class="mn" onclick="selMood(4)" id="m4">😊<span id="ms4">Genial</span></div>
+        <div class="mn" onclick="selMood(5)" id="m5">🤩<span id="ms5">¡Increíble!</span></div>
+      </div>
+      <div class="emo-label" id="emo-lbl">¿QUÉ EMOCIÓN TE DESCRIBE?</div>
+      <div class="emo-grid">
+        <div class="eb" onclick="selEmo('Feliz')" id="e-Feliz">😄<span id="el-Feliz">Feliz</span></div>
+        <div class="eb" onclick="selEmo('Estresada')" id="e-Estresada">😰<span id="el-Estresada">Estresada</span></div>
+        <div class="eb" onclick="selEmo('Ansiosa')" id="e-Ansiosa">😟<span id="el-Ansiosa">Ansiosa</span></div>
+        <div class="eb" onclick="selEmo('Tranquila')" id="e-Tranquila">😌<span id="el-Tranquila">Tranquila</span></div>
+        <div class="eb" onclick="selEmo('Energizada')" id="e-Energizada">⚡<span id="el-Energizada">Energizada</span></div>
+        <div class="eb" onclick="selEmo('Triste')" id="e-Triste">😢<span id="el-Triste">Triste</span></div>
+        <div class="eb" onclick="selEmo('Motivada')" id="e-Motivada">🔥<span id="el-Motivada">Motivada</span></div>
+        <div class="eb" onclick="selEmo('Cansada')" id="e-Cansada">😴<span id="el-Cansada">Cansada</span></div>
+      </div>
+      <button class="btn-get-rec" onclick="logMood()" id="btn-rec" disabled>✨ <span id="btn-rec-txt">OBTENER RECOMENDACIÓN IA</span></button>
+    </div>
+
+    <!-- AI REC -->
+    <div class="ai-rec-card" id="ai-rec">
+      <h3>🤖 <span id="ai-rec-title">TU RECOMENDACIÓN</span></h3>
+      <div class="ai-msg" id="ai-msg"></div>
+      <div class="rec-grid">
+        <div class="rec-item"><div class="ri-icon">🎵</div><div class="ri-label" id="rl-freq">Frecuencia</div><div class="ri-val" id="ai-freq-val">—</div></div>
+        <div class="rec-item"><div class="ri-icon">🌶️</div><div class="ri-label" id="rl-snack">Snack</div><div class="ri-val" id="ai-snack-val">—</div></div>
+      </div>
+      <button class="btn-listen" onclick="showSection('frecuencias')" id="btn-listen">🎵 IR A FRECUENCIAS →</button>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="hist-card">
+      <h3 id="hist-title">📊 TU PROGRESO DE BIENESTAR</h3>
+      <div class="period-tabs">
+        <button class="ptab active" onclick="setPeriod(7,this)">7 <span id="pt7">días</span></button>
+        <button class="ptab" onclick="setPeriod(30,this)">30 <span id="pt30">días ⭐</span></button>
+      </div>
+      <div class="mood-chart" id="mood-chart">
+        <div style="color:#CCC;font-size:11px;text-align:center;width:100%;" id="chart-empty">Registra tu ánimo para ver tu progreso</div>
+      </div>
+      <div class="hap-wrap">
+        <div class="hap-num" id="hap-score">—</div>
+        <div class="hap-lbl" id="hap-lbl">Score de Felicidad</div>
+        <div class="hap-tr" id="hap-trend"></div>
+      </div>
+      <div class="log-list" id="log-list">
+        <div style="text-align:center;color:#CCC;font-size:12px;padding:14px;" id="log-empty">Aún no hay registros. ¡Comienza hoy!</div>
+      </div>
+      <div class="prem-lock" id="prem-lock-30">
+        <div class="pl-icon">🔒</div>
+        <h4 id="pl-title">30 DÍAS — PREMIUM</h4>
+        <p id="pl-desc">El historial completo de 30 días está disponible en Alma Premium.</p>
+        <button class="btn-unlock" onclick="openPremModal()" id="pl-btn">⭐ DESBLOQUEAR — $9.99/mes</button>
+      </div>
+    </div>
+
+    <!-- PREMIUM UPSELL -->
+    <div class="prem-card">
+      <h3>⭐ ALMA PREMIUM</h3>
+      <p id="prem-upsell-desc">Desbloquea análisis IA completo, carta astral, historial 30 días y snack mensual.</p>
+      <div class="prem-feats">
+        <div class="pf-feat">✅ <span id="pf1">Análisis IA profundo de patrones de ánimo</span></div>
+        <div class="pf-feat">✅ <span id="pf2">Historial completo de 30 días</span></div>
+        <div class="pf-feat">✅ <span id="pf3">Carta Astral completa con ascendente y Luna</span></div>
+        <div class="pf-feat">✅ <span id="pf4">Frecuencias Premium exclusivas</span></div>
+        <div class="pf-feat">✅ <span id="pf5">Snack ChiliDulz mensual incluido 🌶️</span></div>
+      </div>
+      <button class="btn-prem" onclick="openPremModal()" id="btn-prem-main">⭐ SUSCRIBIRME — $9.99/MES</button>
+    </div>
+    <div class="bottom-pad"></div>
+  </div>
+
+  <!-- ASTROLOGY -->
+  <div id="astro" class="section">
+    <div class="astro-top">
+      <div style="font-size:38px;margin-bottom:6px;">🔮</div>
+      <h2 id="astro-title">ASTROLOGÍA ALMA</h2>
+      <p id="astro-sub">Horóscopo diario personalizado · Ascendente · Compatibilidad de pareja</p>
+    </div>
+
+    <!-- NO PROFILE -->
+    <div id="astro-no-profile" class="astro-no-profile">
+      <div class="anp-icon">🌟</div>
+      <h3 id="anp-title">Configura tu Perfil Astral</h3>
+      <p id="anp-desc">Para ver tu horóscopo diario personalizado con tu signo solar y ascendente, necesitamos tu fecha, hora y ciudad de nacimiento.</p>
+      <button class="btn-setup" onclick="showSection('alma');scrollToProfile()" id="anp-btn">✨ CREAR MI PERFIL ASTRAL</button>
+    </div>
+
+    <!-- ASTRO CONTENT -->
+    <div id="astro-content" class="astro-content">
+
+      <!-- DAILY HOROSCOPE -->
+      <div class="horo-card">
+        <div class="horo-header">
+          <div class="horo-sign-icon" id="astro-sign-emoji">♈</div>
+          <div>
+            <div class="horo-sign-name" id="astro-sign-name">ARIES</div>
+            <div class="horo-rising" id="astro-rising-display">↑ Ascendente: —</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-top:2px;" id="astro-sign-dates">21 Mar — 19 Abr</div>
+          </div>
+        </div>
+        <div class="horo-today-lbl" id="horo-today-lbl">HORÓSCOPO DE HOY</div>
+        <div class="horo-text" id="horo-text">
+          <div class="spinner" style="margin:10px auto;"></div>
+        </div>
+        <div class="horo-metrics">
+          <div class="hm"><div class="hm-icon">💕</div><div class="hm-val" id="hm-love">—</div><div class="hm-lbl" id="hm-love-lbl">Amor</div></div>
+          <div class="hm"><div class="hm-icon">💼</div><div class="hm-val" id="hm-work">—</div><div class="hm-lbl" id="hm-work-lbl">Trabajo</div></div>
+          <div class="hm"><div class="hm-icon">🌟</div><div class="hm-val" id="hm-energy">—</div><div class="hm-lbl" id="hm-energy-lbl">Energía</div></div>
+        </div>
+        <div class="horo-freq">
+          <div class="horo-freq-lbl" id="horo-freq-lbl">🎵 FRECUENCIA DEL DÍA PARA TU SIGNO</div>
+          <div class="horo-freq-val" id="horo-freq-val">—</div>
+        </div>
+        <button class="btn-hear" onclick="showSection('frecuencias')" id="btn-hear-astro">🎵 ESCUCHAR MI FRECUENCIA →</button>
+      </div>
+
+      <!-- RISING SIGN INFO -->
+      <div id="rising-info-card" style="background:linear-gradient(135deg,#0a0a2e,#1a0a3e);border-radius:16px;padding:16px;color:white;margin-bottom:14px;display:none;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--gold);letter-spacing:1px;margin-bottom:8px;" id="rising-card-title">↑ TU SIGNO ASCENDENTE</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+          <div style="font-size:36px;" id="rising-emoji">♈</div>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:white;letter-spacing:1px;" id="rising-name">—</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px;" id="rising-desc-short">El ascendente es la máscara que mostramos al mundo</div>
+          </div>
+        </div>
+        <div style="font-size:12px;line-height:1.6;opacity:0.85;" id="rising-meaning">—</div>
+      </div>
+
+      <!-- COMPATIBILITY -->
+      <div class="compat-card">
+        <h3 id="compat-title">💕 COMPATIBILIDAD DE PAREJA</h3>
+        <p id="compat-sub">Selecciona el signo de tu pareja o crush</p>
+        <div class="compat-grid" id="compat-grid"></div>
+        <div class="compat-legend">
+          <div class="cl-item"><div class="cl-dot" style="background:var(--gold);"></div><span id="cl-best">Ideal</span></div>
+          <div class="cl-item"><div class="cl-dot" style="background:var(--teal);"></div><span id="cl-good">Compatible</span></div>
+          <div class="cl-item"><div class="cl-dot" style="background:var(--pink);"></div><span id="cl-hard">Desafiante</span></div>
+        </div>
+        <div class="compat-result" id="compat-result">
+          <div class="cr-signs" id="cr-signs">♈ + ♌</div>
+          <div class="cr-title" id="cr-title">Aries + Leo</div>
+          <div class="cr-score" id="cr-score">92%</div>
+          <div class="cr-text" id="cr-text"></div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-pad"></div>
+  </div>
+
+  <!-- SNACKS -->
+  <div id="snacks" class="section">
+    <div class="snack-top">
+      <div style="font-size:36px;margin-bottom:6px;">🌶️</div>
+      <h2 id="snacks-title">CHILIDULZ SNACKS</h2>
+      <p id="snacks-sub">Maní picante chili-lima + tus dulces favoritos. La combinación más adictiva de Latinoamérica.</p>
+      <div class="delivery-banner">
+        📍 Bogotá: Mismo día · Medellín/Cali: 1-2 días · Resto Colombia: 2-4 días<br>
+        🚚 Envío: $8.500 COP · 💳 Pago contra entrega disponible<br>
+        🌎 Internacional: pedidos por WhatsApp
+      </div>
+    </div>
+    <div class="product-grid" id="product-grid">
+      <div class="loading-box" style="grid-column:1/-1;"><div class="spinner"></div>Cargando productos...</div>
+    </div>
+    <div class="bottom-pad"></div>
+  </div>
+
+  <!-- ORDER MODAL -->
+  <div id="order-modal">
+    <div class="order-sheet">
+      <h2>🛒 <span id="om-title">HACER PEDIDO</span></h2>
+      <p class="os-sub" id="om-sub">Completa el formulario · Te confirmamos por WhatsApp</p>
+      <div class="order-selected" id="order-selected-display">
+        <div style="font-size:28px;" id="om-product-emoji">🌶️</div>
+        <div class="os-product-name" id="om-product-name">ChiliDulz</div>
+        <div class="os-product-price" id="om-product-price">$0</div>
+      </div>
+      <div class="order-field">
+        <label id="ofl-size">Tamaño / Size</label>
+        <select id="om-size" onchange="updateOrderTotal()">
+          <option value="">— Selecciona tamaño —</option>
+        </select>
+      </div>
+      <div class="order-field">
+        <label id="ofl-name">Nombre completo</label>
+        <input type="text" id="om-name" placeholder="Tu nombre y apellido"/>
+      </div>
+      <div class="order-field">
+        <label id="ofl-phone">Teléfono / WhatsApp</label>
+        <input type="tel" id="om-phone" placeholder="3XX XXX XXXX"/>
+      </div>
+      <div class="order-field">
+        <label id="ofl-address">Dirección completa</label>
+        <input type="text" id="om-address" placeholder="Calle, número, apartamento..."/>
+      </div>
+      <div class="order-grid">
+        <div class="order-field">
+          <label id="ofl-city">Ciudad</label>
+          <input type="text" id="om-city" placeholder="Bogotá"/>
+        </div>
+        <div class="order-field">
+          <label id="ofl-neighborhood">Barrio</label>
+          <input type="text" id="om-neighborhood" placeholder="Chapinero"/>
+        </div>
+      </div>
+      <div class="order-field">
+        <label id="ofl-state">Departamento / Estado</label>
+        <input type="text" id="om-state" placeholder="Cundinamarca"/>
+      </div>
+      <div class="order-field">
+        <label id="ofl-notes">Notas (opcional)</label>
+        <textarea id="om-notes" placeholder="Instrucciones especiales para el domiciliario..."></textarea>
+      </div>
+      <div class="order-total">
+        <div class="ot-label" id="ot-label">Total del pedido</div>
+        <div class="ot-amount" id="ot-amount">$0 COP</div>
+      </div>
+      <button class="btn-send-order" onclick="sendOrder()">💬 <span id="om-send-btn">ENVIAR PEDIDO POR WHATSAPP</span></button>
+      <button class="btn-order-cancel" onclick="closeOrderModal()" id="om-cancel-btn">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- FRECUENCIAS -->
+  <div id="frecuencias" class="section">
+    <div class="freq-top">
+      <div style="font-size:36px;margin-bottom:6px;">🎵</div>
+      <h2 id="freq-title">FRECUENCIAS DE BIENESTAR</h2>
+      <p id="freq-sub">60+ frecuencias Solfeggio y sonidos naturales. Todas gratis.</p>
+    </div>
+    <div class="cat-tabs">
+      <button class="ctab active" onclick="filterFreq('all',this)" id="cat-all-btn">🎵 Todas</button>
+      <button class="ctab" onclick="filterFreq('sueno',this)">😴 Sueño</button>
+      <button class="ctab" onclick="filterFreq('meditacion',this)">🧘 Meditación</button>
+      <button class="ctab" onclick="filterFreq('sanacion',this)">💚 Sanación</button>
+      <button class="ctab" onclick="filterFreq('emocional',this)">❤️ Emocional</button>
+      <button class="ctab" onclick="filterFreq('chakras',this)">🌈 Chakras</button>
+      <button class="ctab" onclick="filterFreq('espiritual',this)">✨ Espiritual</button>
+      <button class="ctab" onclick="filterFreq('enfoque',this)">🧠 Enfoque</button>
+      <button class="ctab" onclick="filterFreq('energia',this)">⚡ Energía</button>
+      <button class="ctab" onclick="filterFreq('naturaleza',this)">🌲 Naturaleza</button>
+    </div>
+    <div class="freq-list" id="freq-list">
+      <div class="loading-box"><div class="spinner"></div><span id="freq-loading">Cargando frecuencias...</span></div>
+    </div>
+    <div class="bottom-pad"></div>
+  </div>
+
+  <!-- COMUNIDAD -->
+  <div id="comunidad" class="section">
+    <div class="com-top">
+      <div style="font-size:38px;margin-bottom:6px;">💬</div>
+      <h2 id="com-title">ÚNETE A LA COMUNIDAD</h2>
+      <p style="font-size:12px;opacity:0.85;margin-top:4px;" id="com-sub">Frecuencias · Astrología · Alma Premium · Snacks</p>
+    </div>
+    <div class="com-section">
+      <div class="com-card">
+        <div class="com-head"><h3 id="com-head">REGÍSTRATE Y RECIBE</h3></div>
+        <div class="com-body">
+          <div class="ben-row"><span style="font-size:18px;">🎵</span><span id="ben1">Nuevas frecuencias de bienestar cada semana</span></div>
+          <div class="ben-row"><span style="font-size:18px;">🔮</span><span id="ben2">Tu horóscopo semanal por WhatsApp</span></div>
+          <div class="ben-row"><span style="font-size:18px;">✨</span><span id="ben3">Acceso anticipado a Alma Premium</span></div>
+          <div class="ben-row"><span style="font-size:18px;">🌶️</span><span id="ben4">Primero en recibir ChiliDulz Snacks</span></div>
+          <hr style="border:none;border-top:1px solid #EEE;margin:12px 0;">
+          <div class="fg"><label id="wa-name-lbl">Tu nombre</label><input type="text" id="wa-nombre" placeholder="¿Cómo te llamas?"/></div>
+          <div class="fg"><label>WhatsApp</label><input type="tel" id="wa-numero" placeholder="3XX XXX XXXX"/></div>
+          <button class="btn-wa-join" onclick="registerWA()">💬 <span id="wa-join-btn">UNIRME AHORA</span></button>
+        </div>
+      </div>
+      <div style="background:white;border-radius:14px;padding:14px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--dark);margin-bottom:8px;" id="contact-title">CONTÁCTANOS</div>
+        <a href="tel:+573016880127" style="color:var(--red);font-weight:800;font-size:15px;text-decoration:none;display:block;margin-bottom:6px;">📞 301 688 0127</a>
+        <a href="https://www.instagram.com/ricaproteina" target="_blank" style="color:#C13584;font-weight:800;font-size:13px;text-decoration:none;">📸 @ricaproteina</a>
+      </div>
+    </div>
+    <div class="bottom-pad"></div>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div id="admin-login">
+  <div class="al-card">
+    <div style="font-size:36px;margin-bottom:8px;">🔐</div>
+    <h2>ADMIN PANEL</h2>
+    <p>ChiliDulz Alma — Frequencies & Campaigns</p>
+    <div class="al-err" id="al-err">❌ Incorrect password</div>
+    <input type="password" id="adm-pwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="btn-al-login" onclick="doLogin()">🔓 LOGIN</button>
+    <button class="btn-al-cancel" onclick="closeAdminLogin()">CANCEL</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel">
+  <div class="adm-hdr"><h2>⚙️ CHILIDULZ ADMIN</h2><button class="btn-adm-out" onclick="logoutAdmin()">LOGOUT</button></div>
+  <div class="adm-body">
+    <div id="sync-st" class="sync-st sload">⏳ Connecting...</div>
+    <div class="adm-tip">💡 All changes are instant — customers worldwide see updates immediately.</div>
+    <div class="adm-sec">📣 SEND CAMPAIGN</div>
+    <div class="sub-box"><div class="snum" id="sub-count">—</div><p>Push notification subscribers</p></div>
+    <div class="camp-box">
+      <h3>📱 NEW CAMPAIGN</h3>
+      <div class="cf"><label>Title (max 50)</label><input type="text" id="ct" maxlength="50" placeholder="Ex: New 528 Hz frequency!"/></div>
+      <div class="cf"><label>Message (max 150)</label><textarea id="cb" maxlength="150" placeholder="Ex: Your daily horoscope frequency is ready!"></textarea></div>
+      <div class="cf"><label>Image URL</label><input type="url" id="ci" placeholder="https://i.imgur.com/image.jpg"/></div>
+      <div class="cf"><label>Instagram URL</label><input type="url" id="cig" placeholder="https://www.instagram.com/p/post/"/></div>
+      <button class="btn-send" onclick="sendCampaign()">🚀 SEND TO ALL</button>
+    </div>
+    <div class="adm-sec">📋 CAMPAIGN HISTORY</div>
+    <div class="camp-hist" id="camp-hist"><div class="loading-box"><div class="spinner"></div></div></div>
+    <div class="adm-sec">🌶️ CHILIDULZ PRODUCTS</div>
+    <div class="adm-tip">💡 Add your snack products here. Variants format: 45g=$5000, 150g=$12000, 500g=$40000</div>
+    <div class="adm-list" id="adm-product-list"><div class="loading-box"><div class="spinner"></div></div></div>
+    <button class="btn-adm-add" style="background:linear-gradient(135deg,var(--red),var(--orange));" onclick="openProductModal(null)">➕ ADD PRODUCT</button>
+    <div class="adm-sec">🎵 FREQUENCIES</div>
+    <div class="adm-tip">💡 Google Drive URL: https://drive.google.com/uc?export=download&id=YOUR_FILE_ID</div>
+    <div class="adm-list" id="adm-freq-list"><div class="loading-box"><div class="spinner"></div></div></div>
+    <button class="btn-adm-add" onclick="openEditModal(null)">➕ ADD FREQUENCY</button>
+    <button class="btn-adm-view" onclick="logoutAdmin()">👁 VIEW APP</button>
+    <div class="adm-sec">🔑 CHANGE PASSWORD</div>
+    <div class="pwd-sec">
+      <div class="ef"><label>New password</label><input type="password" id="np" placeholder="Min 6 chars"/></div>
+      <div class="ef"><label>Confirm</label><input type="password" id="cp2" placeholder="Repeat"/></div>
+      <button onclick="changePwd()" style="width:100%;background:var(--dark2);color:white;border:none;border-radius:10px;padding:11px;font-weight:700;cursor:pointer;font-size:12px;">🔑 CHANGE PASSWORD</button>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div id="product-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:600;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;">
+  <div class="em-card" style="margin:auto;">
+    <h3 id="pm-title" style="color:var(--red);">ADD PRODUCT</h3>
+    <input type="hidden" id="pm-id"/>
+    <div class="ef"><label>Product name (ES)</label><input type="text" id="pm-name" placeholder="Ex: ChiliDulz Ositos"/></div>
+    <div class="ef"><label>Description (ES)</label><textarea id="pm-desc" placeholder="Ex: Maní picante + ositos de goma"></textarea></div>
+    <div class="ef"><label>Emoji icon</label><input type="text" id="pm-emoji" placeholder="🐻 🌶️ 🍫 ☁️ 🫐"/></div>
+    <div class="ef"><label>Product image URL</label><input type="url" id="pm-image" placeholder="https://i.imgur.com/yourimage.jpg"/></div>
+    <div class="ef"><label>Base price (COP, numbers only)</label><input type="number" id="pm-price" placeholder="12000"/></div>
+    <div class="ef"><label>Size variants (format: 45g=5000,150g=12000,500g=40000)</label><input type="text" id="pm-variants" placeholder="45g=5000,150g=12000,500g=40000"/></div>
+    <div class="ef"><label>WhatsApp order number</label><input type="text" id="pm-wa" value="573016880127" placeholder="573016880127"/></div>
+    <div class="em-btns">
+      <button class="btn-em-save" style="background:linear-gradient(135deg,var(--red),var(--orange));" onclick="saveProduct()">💾 SAVE</button>
+      <button class="btn-em-cancel" onclick="closeProductModal()">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div id="edit-modal">
+  <div class="em-card">
+    <h3 id="em-title">ADD FREQUENCY</h3>
+    <input type="hidden" id="em-id"/>
+    <div class="ef"><label>Title</label><input type="text" id="em-name" placeholder="Ex: 528 Hz — DNA Repair"/></div>
+    <div class="ef"><label>Hz Value</label><input type="text" id="em-hz" placeholder="Ex: 528 Hz"/></div>
+    <div class="ef"><label>Benefit (short)</label><input type="text" id="em-benefit" placeholder="Ex: DNA Repair · Transformation"/></div>
+    <div class="ef"><label>Description</label><textarea id="em-desc" placeholder="What does this frequency do?"></textarea></div>
+    <div class="ef"><label>Category</label>
+      <select id="em-cat">
+        <option value="sueno">😴 Sueño</option>
+        <option value="meditacion">🧘 Meditación</option>
+        <option value="sanacion" selected>💚 Sanación</option>
+        <option value="emocional">❤️ Emocional</option>
+        <option value="chakras">🌈 Chakras</option>
+        <option value="espiritual">✨ Espiritual</option>
+        <option value="enfoque">🧠 Enfoque</option>
+        <option value="energia">⚡ Energía</option>
+        <option value="naturaleza">🌲 Naturaleza</option>
+      </select>
+    </div>
+    <div class="ef"><label>Emoji</label><input type="text" id="em-emoji" placeholder="Ex: 🧬 💚 😴 ⚡"/></div>
+    <div class="ef"><label>MP3 URL (Google Drive download)</label><input type="url" id="em-url" placeholder="https://drive.google.com/uc?export=download&id=..."/></div>
+    <div class="ef"><label>Premium only?</label>
+      <select id="em-prem"><option value="false">No — Free for everyone</option><option value="true">Yes — Premium only</option></select>
+    </div>
+    <div class="em-btns">
+      <button class="btn-em-save" onclick="saveFreq()">💾 SAVE</button>
+      <button class="btn-em-cancel" onclick="closeEditModal()">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="overlay" id="success-ov">
+  <div class="ov-card">
+    <div class="ov-icon">✅</div>
+    <h2>¡LISTO!</h2>
+    <p id="ov-msg"></p>
+    <button class="btn-ov-close" onclick="closeSuccess()">¡GENIAL!</button>
+  </div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
+<script>
+const SB='https://lckehgsuqxrjnlvjumal.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxja2VoZ3N1cXhyam5sdmp1bWFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyNjg4NzUsImV4cCI6MjA5Nzg0NDg3NX0.yEDO2p9iMse-UyZogj8W0OXXGUOzneKaG73pGiW14TE';
+const AK='cdAdminPwd',DP='chili2024',PK='cdPremium';
+const VAPID='UjMXnKHEcl4QfzTditud_q2LfEgIfdixbnud7CwKWJM';
+firebase.initializeApp({apiKey:"AIzaSyDodv4XF4Gl1BzmfFWCyceWsngMA20eCr0",authDomain:"ricapro-fd683.firebaseapp.com",projectId:"ricapro-fd683",storageBucket:"ricapro-fd683.firebasestorage.app",messagingSenderId:"81672217982",appId:"1:81672217982:web:5dead5e119db9b258d7f2f"});
+const fcm=firebase.messaging();
+async function sb(path,opts={}){const r=await fetch(`${SB}/rest/v1/${path}`,{headers:{'apikey':SK,'Authorization':`Bearer ${SK}`,'Content-Type':'application/json','Prefer':'return=representation',...opts.headers},...opts});if(!r.ok)throw new Error(await r.text());const t=await r.text();return t?JSON.parse(t):[];}
+const isPremium=()=>localStorage.getItem(PK)==='true';
+const userId=localStorage.getItem('cdUID')||(()=>{const id='u'+Date.now().toString(36)+Math.random().toString(36).substr(2,5);localStorage.setItem('cdUID',id);return id;})();
+let userProfile=JSON.parse(localStorage.getItem('cdProfile')||'{}');
+let lang=localStorage.getItem('cdLang')||'es';
+let selMoodVal=0,selEmoVal='',histPeriodVal=7,currentCat='all',allFreqs=[],horoCache={},compatCache={};
+
+// ZODIAC
+const SIGNS=[
+  {es:'Aries',en:'Aries',pt:'Áries',sym:'♈',emoji:'🐏',start:[3,21],end:[4,19],dates_es:'21 Mar — 19 Abr',elem:'🔥 Fuego',ruler:'Marte',freq_es:'528 Hz — Energía y transformación',best:['Leo','Sagitario','Géminis'],good:['Acuario','Libra'],hard:['Cáncer','Capricornio'],rising_es:'Tu ascendente en Aries te da una presencia magnética, directa y llena de energía. Los demás te perciben como alguien valiente, pionero y apasionado.'},
+  {es:'Tauro',en:'Taurus',pt:'Touro',sym:'♉',emoji:'🐂',start:[4,20],end:[5,20],dates_es:'20 Abr — 20 May',elem:'🌍 Tierra',ruler:'Venus',freq_es:'432 Hz — Armonía y estabilidad',best:['Virgo','Capricornio','Cáncer'],good:['Escorpio','Piscis'],hard:['Acuario','Leo'],rising_es:'Tu ascendente en Tauro proyecta calma, sensualidad y confiabilidad. Los demás te ven como alguien elegante, paciente y con los pies en la tierra.'},
+  {es:'Géminis',en:'Gemini',pt:'Gêmeos',sym:'♊',emoji:'👯',start:[5,21],end:[6,20],dates_es:'21 May — 20 Jun',elem:'💨 Aire',ruler:'Mercurio',freq_es:'741 Hz — Expresión y comunicación',best:['Libra','Acuario','Aries'],good:['Leo','Sagitario'],hard:['Piscis','Virgo'],rising_es:'Tu ascendente en Géminis te hace ver inteligente, curioso y adaptable. Los demás te perciben como alguien encantador, versátil y lleno de ideas.'},
+  {es:'Cáncer',en:'Cancer',pt:'Câncer',sym:'♋',emoji:'🦀',start:[6,21],end:[7,22],dates_es:'21 Jun — 22 Jul',elem:'💧 Agua',ruler:'Luna',freq_es:'639 Hz — Amor y compasión',best:['Escorpio','Piscis','Tauro'],good:['Virgo','Capricornio'],hard:['Aries','Libra'],rising_es:'Tu ascendente en Cáncer proyecta ternura, empatía y un aura protectora. Los demás te ven como alguien cálido, intuitivo y profundamente conectado emocionalmente.'},
+  {es:'Leo',en:'Leo',pt:'Leão',sym:'♌',emoji:'🦁',start:[7,23],end:[8,22],dates_es:'23 Jul — 22 Ago',elem:'🔥 Fuego',ruler:'Sol',freq_es:'528 Hz — Poder y creatividad',best:['Aries','Sagitario','Géminis'],good:['Libra','Acuario'],hard:['Tauro','Escorpio'],rising_es:'Tu ascendente en Leo te da presencia, carisma y una energía que ilumina cualquier sala. Los demás te perciben como alguien generoso, dramático y naturalmente líder.'},
+  {es:'Virgo',en:'Virgo',pt:'Virgem',sym:'♍',emoji:'👸',start:[8,23],end:[9,22],dates_es:'23 Ago — 22 Sep',elem:'🌍 Tierra',ruler:'Mercurio',freq_es:'285 Hz — Sanación y perfección',best:['Tauro','Capricornio','Cáncer'],good:['Escorpio','Piscis'],hard:['Géminis','Sagitario'],rising_es:'Tu ascendente en Virgo proyecta inteligencia, orden y atención al detalle. Los demás te ven como alguien analítico, servicial y de total confianza.'},
+  {es:'Libra',en:'Libra',pt:'Libra',sym:'♎',emoji:'⚖️',start:[9,23],end:[10,22],dates_es:'23 Sep — 22 Oct',elem:'💨 Aire',ruler:'Venus',freq_es:'639 Hz — Armonía en relaciones',best:['Géminis','Acuario','Leo'],good:['Sagitario','Aries'],hard:['Cáncer','Capricornio'],rising_es:'Tu ascendente en Libra te hace ver elegante, diplomático y encantador. Los demás te perciben como alguien justo, estético y que siempre busca el equilibrio.'},
+  {es:'Escorpio',en:'Scorpio',pt:'Escorpião',sym:'♏',emoji:'🦂',start:[10,23],end:[11,21],dates_es:'23 Oct — 21 Nov',elem:'💧 Agua',ruler:'Plutón',freq_es:'396 Hz — Transformación profunda',best:['Cáncer','Piscis','Virgo'],good:['Tauro','Capricornio'],hard:['Leo','Acuario'],rising_es:'Tu ascendente en Escorpio proyecta intensidad, magnetismo y misterio. Los demás te ven como alguien poderoso, perspicaz y transformador.'},
+  {es:'Sagitario',en:'Sagittarius',pt:'Sagitário',sym:'♐',emoji:'🏹',start:[11,22],end:[12,21],dates_es:'22 Nov — 21 Dic',elem:'🔥 Fuego',ruler:'Júpiter',freq_es:'963 Hz — Expansión espiritual',best:['Aries','Leo','Libra'],good:['Acuario','Géminis'],hard:['Virgo','Piscis'],rising_es:'Tu ascendente en Sagitario te da una energía optimista, aventurera y filosófica. Los demás te perciben como alguien libre, sabio y lleno de entusiasmo.'},
+  {es:'Capricornio',en:'Capricorn',pt:'Capricórnio',sym:'♑',emoji:'🐐',start:[12,22],end:[1,19],dates_es:'22 Dic — 19 Ene',elem:'🌍 Tierra',ruler:'Saturno',freq_es:'174 Hz — Disciplina y propósito',best:['Tauro','Virgo','Escorpio'],good:['Cáncer','Piscis'],hard:['Aries','Libra'],rising_es:'Tu ascendente en Capricornio proyecta autoridad, ambición y madurez. Los demás te ven como alguien serio, confiable y destinado al éxito.'},
+  {es:'Acuario',en:'Aquarius',pt:'Aquário',sym:'♒',emoji:'🏺',start:[1,20],end:[2,18],dates_es:'20 Ene — 18 Feb',elem:'💨 Aire',ruler:'Urano',freq_es:'852 Hz — Intuición y libertad',best:['Géminis','Libra','Sagitario'],good:['Aries','Leo'],hard:['Tauro','Escorpio'],rising_es:'Tu ascendente en Acuario te hace ver único, progresista y humanitario. Los demás te perciben como alguien original, independiente y visionario.'},
+  {es:'Piscis',en:'Pisces',pt:'Peixes',sym:'♓',emoji:'🐟',start:[2,19],end:[3,20],dates_es:'19 Feb — 20 Mar',elem:'💧 Agua',ruler:'Neptuno',freq_es:'417 Hz — Intuición y sueños',best:['Cáncer','Escorpio','Tauro'],good:['Virgo','Capricornio'],hard:['Géminis','Sagitario'],rising_es:'Tu ascendente en Piscis proyecta sensibilidad, empatía y un aura casi mística. Los demás te ven como alguien compasivo, artístico y profundamente espiritual.'}
+];
+
+function getSign(dateStr){
+  if(!dateStr)return null;
+  const d=new Date(dateStr);const m=d.getMonth()+1;const day=d.getDate();
+  return SIGNS.find(s=>{
+    const[sm,sd]=s.start;const[em,ed]=s.end;
+    if(sm<em)return(m===sm&&day>=sd)||(m>sm&&m<em)||(m===em&&day<=ed);
+    return(m===sm&&day>=sd)||(m===1&&day<=ed);
+  })||SIGNS[0];
+}
+
+// RISING SIGN — approximation based on birth time + city latitude
+function getRising(timeStr,cityStr,sunSignIdx){
+  if(!timeStr)return null;
+  const[h,mi]=timeStr.split(':').map(Number);
+  const totalMins=h*60+(mi||0);
+  // Each sign rules ~2 hours (120 mins). Rising shifts with birth time.
+  // Approximate: rising = sign that was on eastern horizon at birth
+  // Simple approximation: offset from sun sign based on time of day
+  const offset=Math.floor(totalMins/120);
+  return SIGNS[(sunSignIdx+offset)%12];
+}
+
+// LANGUAGE STRINGS
+const L={
+  es:{nav_home:'Inicio',nav_astro:'Astro',nav_freq:'Frecuencias',nav_com:'Comunidad',
+    hero_badge:'✨ ALMA AI · BIENESTAR + ASTROLOGÍA',hero_sub:'Tu compañera de bienestar mental con IA.',
+    hs1:'FRECUENCIAS',hs2:'SIGNOS',hs3:'PERSONALIZADA',hero_cta:'✨ COMENZAR GRATIS',
+    hc_alma:'Bienestar mental con IA',hc_astro:'Horóscopo + ascendente',hc_freq:'60+ MP3 gratis',hc_com_t:'COMUNIDAD',hc_com_s:'Únete · ofertas exclusivas',
+    sb_tag:'🌶️ MUY PRONTO',sb_desc:'Maní picante chili-lima + dulces. Entrega mismo día via Rappi y DiDi en Bogotá.',sb_btn:'🔔 NOTIFÍCAME',
+    nb_title:'¡Activa las notificaciones!',nb_desc:'Recibe nuevas frecuencias y tu horóscopo diario.',nb_btn:'✅ ACTIVAR',
+    alma_sub:'Tu compañera de bienestar mental con IA',
+    ps_title:'CREA TU PERFIL ALMA',ps_desc:'Tu fecha, hora y ciudad de nacimiento calculan tu signo solar y ascendente para un horóscopo completamente personalizado.',
+    ps_name_lbl:'Tu nombre',ps_bdate_lbl:'Fecha de nacimiento',ps_btime_lbl:'Hora de nacimiento (para calcular tu ascendente)',ps_bcity_lbl:'Ciudad de nacimiento',ps_privacy:'Tu información es privada y solo se usa para personalizar tu experiencia.',ps_save_btn:'✨ GUARDAR MI PERFIL ASTRAL',
+    sd_edit_btn:'✏️ Editar perfil',
+    mc_title:'¿CÓMO TE SIENTES HOY?',mc_sub:'Registra tu estado de ánimo y recibe recomendaciones personalizadas de IA',
+    streak_lbl:'días seguidos',streak_next_lbl:'Próxima medalla:',sb_title:'¡Tu racha te espera!',sb_desc:'Registra tu ánimo hoy para empezar una nueva racha de bienestar.',
+    streak_milestone_msg:(n)=>`🔥 ¡Increíble! Llevas ${n} días seguidos cuidando tu bienestar. ¡Sigue así!`,
+    ms:{1:'Mal',2:'Bajo',3:'Bien',4:'Genial',5:'¡Increíble!'},
+    emo_lbl:'¿QUÉ EMOCIÓN TE DESCRIBE?',
+    emos:{Feliz:'Feliz',Estresada:'Estresada',Ansiosa:'Ansiosa',Tranquila:'Tranquila',Energizada:'Energizada',Triste:'Triste',Motivada:'Motivada',Cansada:'Cansada'},
+    btn_rec:'OBTENER RECOMENDACIÓN IA',btn_loading:'Analizando con IA...',btn_logged:'✅ REGISTRADO — Registrar otro',
+    ai_rec_title:'TU RECOMENDACIÓN',rl_freq:'Frecuencia',rl_snack:'Snack',btn_listen:'🎵 IR A FRECUENCIAS →',
+    hist_title:'📊 TU PROGRESO DE BIENESTAR',pt7:'días',pt30:'días ⭐',chart_empty:'Registra tu ánimo para ver tu progreso',
+    hap_lbl:'Score de Felicidad',trend_up:'📈 Mejorando',trend_same:'📊 Estable',trend_dn:'📉 Trabajando en ello',log_empty:'Aún no hay registros. ¡Comienza hoy!',
+    pl_title:'30 DÍAS — PREMIUM',pl_desc:'El historial completo de 30 días está disponible en Alma Premium.',pl_btn:'⭐ DESBLOQUEAR — $9.99/mes',
+    prem_upsell_desc:'Desbloquea análisis IA completo, carta astral, historial 30 días y snack mensual.',
+    pf1:'Análisis IA profundo de patrones de ánimo',pf2:'Historial completo de 30 días',pf3:'Carta Astral completa con ascendente y Luna',pf4:'Frecuencias Premium exclusivas',pf5:'Snack ChiliDulz mensual incluido 🌶️',
+    btn_prem_main:'⭐ SUSCRIBIRME — $9.99/MES',
+    astro_title:'ASTROLOGÍA ALMA',astro_sub:'Horóscopo diario personalizado · Ascendente · Compatibilidad de pareja',
+    anp_title:'Configura tu Perfil Astral',anp_desc:'Para tu horóscopo personalizado con signo solar y ascendente, necesitamos tu fecha, hora y ciudad de nacimiento.',anp_btn:'✨ CREAR MI PERFIL ASTRAL',
+    horo_today_lbl:'HORÓSCOPO DE HOY',hm_love_lbl:'Amor',hm_work_lbl:'Trabajo',hm_energy_lbl:'Energía',horo_freq_lbl:'🎵 FRECUENCIA DEL DÍA PARA TU SIGNO',btn_hear_astro:'🎵 ESCUCHAR MI FRECUENCIA →',
+    rising_card_title:'↑ TU SIGNO ASCENDENTE',rising_desc_short:'El ascendente es la máscara que mostramos al mundo',
+    compat_title:'💕 COMPATIBILIDAD DE PAREJA',compat_sub:'Selecciona el signo de tu pareja o crush',
+    cl_best:'Ideal',cl_good:'Compatible',cl_hard:'Desafiante',
+    freq_title:'FRECUENCIAS DE BIENESTAR',freq_sub:'60+ frecuencias Solfeggio y sonidos naturales. Todas gratis.',freq_loading:'Cargando frecuencias...',
+    btn_dl:'⬇️ DESCARGAR GRATIS',btn_dl_prem:'⭐ PREMIUM',
+    com_title:'ÚNETE A LA COMUNIDAD',com_sub:'Frecuencias · Astrología · Alma Premium · Snacks',com_head:'REGÍSTRATE Y RECIBE',
+    ben1:'Nuevas frecuencias de bienestar cada semana',ben2:'Tu horóscopo semanal por WhatsApp',ben3:'Acceso anticipado a Alma Premium',ben4:'Primero en recibir ChiliDulz Snacks',
+    wa_name_lbl:'Tu nombre',wa_join_btn:'UNIRME AHORA',contact_title:'CONTÁCTANOS',
+    pm_sub:'Desbloquea tu bienestar completo con IA',pm_wa_btn:'SUSCRIBIRME POR WHATSAPP',pm_cl_btn:'Tal vez después',ppp:'/mes · Cancela cuando quieras',
+    pmf1t:'Historial completo 30 días',pmf1s:'Analiza patrones de bienestar a largo plazo',pmf2t:'Análisis IA profundo',pmf2s:'Insights y recomendaciones semanales',pmf3t:'Carta Astral completa',pmf3s:'Ascendente, Luna y análisis astrológico profundo',pmf4t:'Frecuencias Premium exclusivas',pmf4s:'Acceso a toda la biblioteca de 60+ frecuencias',pmf5t:'Snack ChiliDulz mensual',pmf5s:'Una sorpresa de snacks a tu puerta cada mes',
+    ip_title:'Instala ChiliDulz Alma',ip_desc:'Agrega la app a tu pantalla de inicio',ip_btn:'📲 INSTALAR',ip_later:'Ahora no',
+    days:['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'],
+    mood_recs:{1:{msg:'Hoy puede sentirse pesado, pero recuerda: después de la lluvia siempre sale el sol. La frecuencia 396 Hz te ayudará a soltar lo que te pesa. 💜',freq:'396 Hz — Libera el miedo',snack:'ChiliDulz Marshmallow (pronto)'},2:{msg:'Estás en transición hacia algo mejor. La frecuencia 417 Hz limpiará las energías que ya no te sirven. ✨',freq:'417 Hz — Elimina negatividad',snack:'ChiliDulz Chocolate (pronto)'},3:{msg:'Tu energía está equilibrada. Es el momento de potenciarla con 528 Hz, la frecuencia del amor propio. 🌟',freq:'528 Hz — Reparación y amor',snack:'ChiliDulz Cranberry (pronto)'},4:{msg:'¡Tu energía está alta! La frecuencia 639 Hz amplificará tu conexión con quienes te rodean. 🔥',freq:'639 Hz — Amor y conexión',snack:'ChiliDulz Agridulce (pronto)'},5:{msg:'¡Estás en tu mejor momento! La frecuencia 963 Hz te conectará con tu ser superior. 🤩',freq:'963 Hz — Ser Superior',snack:'ChiliDulz Ositos (pronto)'}},
+    emo_override:{Estresada:{freq:'174 Hz — Anestésico Natural'},Ansiosa:{freq:'285 Hz — Calma la ansiedad'},Triste:{freq:'396 Hz — Libera la tristeza'},Cansada:{freq:'528 Hz — Restaura energía'},Energizada:{freq:'741 Hz — Potencia tu expresión'},Motivada:{freq:'852 Hz — Amplifica intuición'}},
+    success_notif:'🔔 ¡Notificaciones activadas!',success_wa:'¡Bienvenida! Ya eres parte de la comunidad ChiliDulz 🌶️',success_snack:'¡Gracias! Te notificaremos cuando ChiliDulz Snacks esté disponible. 🌶️',success_prem:'¡Gracias! Te contactaremos pronto por WhatsApp para activar Alma Premium. ⭐',success_profile:'¡Perfil astral guardado! Tu signo solar y ascendente están listos. ✨',success_install:'¡App instalada! Encuentra ChiliDulz Alma en tu pantalla de inicio. ✨',
+    horoscope_prompt:(sign,rising,date)=>`Eres el astrólogo experto de ChiliDulz Alma. Escribe el horóscopo del día ${date} para ${sign}${rising?` con ascendente en ${rising}`:''} en español. Solo devuelve JSON exacto sin backticks: {"text":"2-3 oraciones inspiradoras específicas para hoy","love":N,"work":N,"energy":N} donde N es 1-5.`,
+    compat_prompt:(s1,s2)=>`Eres el astrólogo de ChiliDulz. Analiza compatibilidad amorosa entre ${s1} y ${s2} en español. Solo JSON sin backticks: {"score":0-100,"text":"2-3 oraciones sobre la dinámica de esta pareja"}.`
+  },
+  en:{nav_home:'Home',nav_astro:'Astro',nav_freq:'Frequencies',nav_com:'Community',
+    hero_badge:'✨ ALMA AI · WELLNESS + ASTROLOGY',hero_sub:'Your AI-powered mental wellness companion.',
+    hs1:'FREQUENCIES',hs2:'SIGNS',hs3:'PERSONALIZED',hero_cta:'✨ START FREE',
+    hc_alma:'AI mental wellness',hc_astro:'Horoscope + rising sign',hc_freq:'60+ free MP3s',hc_com_t:'COMMUNITY',hc_com_s:'Join · exclusive offers',
+    sb_tag:'🌶️ COMING SOON',sb_desc:'Spicy chili-lime peanuts + sweets. Same-day delivery via Rappi & DiDi in Bogotá.',sb_btn:'🔔 NOTIFY ME',
+    nb_title:'Enable notifications!',nb_desc:'Get new frequencies and your daily horoscope.',nb_btn:'✅ ENABLE',
+    alma_sub:'Your AI-powered mental wellness companion',
+    ps_title:'CREATE YOUR ALMA PROFILE',ps_desc:'Your birth date, time and city allow us to calculate your sun sign and rising sign for a fully personalized daily horoscope.',
+    ps_name_lbl:'Your name',ps_bdate_lbl:'Birth date',ps_btime_lbl:'Birth time (to calculate your rising sign)',ps_bcity_lbl:'Birth city',ps_privacy:'Your information is private and only used to personalize your experience.',ps_save_btn:'✨ SAVE MY ASTRAL PROFILE',
+    sd_edit_btn:'✏️ Edit profile',
+    mc_title:'HOW DO YOU FEEL TODAY?',mc_sub:'Log your mood and get personalized AI recommendations',
+    streak_lbl:'day streak',streak_next_lbl:'Next badge:',sb_title:'Your streak awaits!',sb_desc:'Log your mood today to start a new wellness streak.',
+    streak_milestone_msg:(n)=>`🔥 Amazing! You've taken care of your wellness for ${n} days straight. Keep going!`,
+    ms:{1:'Bad',2:'Low',3:'OK',4:'Great',5:'Amazing!'},
+    emo_lbl:'WHAT EMOTION DESCRIBES YOU?',
+    emos:{Feliz:'Happy',Estresada:'Stressed',Ansiosa:'Anxious',Tranquila:'Calm',Energizada:'Energized',Triste:'Sad',Motivada:'Motivated',Cansada:'Tired'},
+    btn_rec:'GET AI RECOMMENDATION',btn_loading:'AI analyzing...',btn_logged:'✅ LOGGED — Log another',
+    ai_rec_title:'YOUR RECOMMENDATION',rl_freq:'Frequency',rl_snack:'Snack',btn_listen:'🎵 GO TO FREQUENCIES →',
+    hist_title:'📊 YOUR WELLNESS PROGRESS',pt7:'days',pt30:'days ⭐',chart_empty:'Log your mood to see your progress',
+    hap_lbl:'Happiness Score',trend_up:'📈 Improving',trend_same:'📊 Stable',trend_dn:'📉 Working on it',log_empty:'No logs yet. Start today!',
+    pl_title:'30 DAYS — PREMIUM',pl_desc:'Complete 30-day history available in Alma Premium.',pl_btn:'⭐ UNLOCK — $9.99/mo',
+    prem_upsell_desc:'Unlock complete AI analysis, astral chart, 30-day history and monthly snack.',
+    pf1:'Deep AI mood pattern analysis',pf2:'Complete 30-day history',pf3:'Full Astral Chart with rising & Moon',pf4:'Exclusive Premium frequencies',pf5:'Monthly ChiliDulz snack included 🌶️',
+    btn_prem_main:'⭐ SUBSCRIBE — $9.99/MO',
+    astro_title:'ALMA ASTROLOGY',astro_sub:'Personalized daily horoscope · Rising sign · Partner compatibility',
+    anp_title:'Set Up Your Astral Profile',anp_desc:'For your personalized horoscope with sun and rising sign, we need your birth date, time and city.',anp_btn:'✨ CREATE MY ASTRAL PROFILE',
+    horo_today_lbl:"TODAY'S HOROSCOPE",hm_love_lbl:'Love',hm_work_lbl:'Work',hm_energy_lbl:'Energy',horo_freq_lbl:"🎵 TODAY'S FREQUENCY FOR YOUR SIGN",btn_hear_astro:'🎵 LISTEN TO MY FREQUENCY →',
+    rising_card_title:'↑ YOUR RISING SIGN',rising_desc_short:'The rising sign is the mask we show the world',
+    compat_title:'💕 PARTNER COMPATIBILITY',compat_sub:"Select your partner's or crush's sign",
+    cl_best:'Ideal',cl_good:'Compatible',cl_hard:'Challenging',
+    freq_title:'WELLNESS FREQUENCIES',freq_sub:'60+ Solfeggio frequencies and nature sounds. All free.',freq_loading:'Loading frequencies...',
+    btn_dl:'⬇️ DOWNLOAD FREE',btn_dl_prem:'⭐ PREMIUM',
+    com_title:'JOIN THE COMMUNITY',com_sub:'Frequencies · Astrology · Alma Premium · Snacks',com_head:'SIGN UP AND RECEIVE',
+    ben1:'New wellness frequencies every week',ben2:'Your weekly horoscope on WhatsApp',ben3:'Early access to Alma Premium',ben4:'First to receive ChiliDulz Snacks',
+    wa_name_lbl:'Your name',wa_join_btn:'JOIN NOW',contact_title:'CONTACT US',
+    pm_sub:'Unlock your complete wellness journey with AI',pm_wa_btn:'SUBSCRIBE VIA WHATSAPP',pm_cl_btn:'Maybe later',ppp:'/month · Cancel anytime',
+    pmf1t:'Complete 30-day history',pmf1s:'Analyze long-term wellness patterns',pmf2t:'Deep AI analysis',pmf2s:'Weekly personalized insights',pmf3t:'Full Astral Chart',pmf3s:'Rising sign, Moon and deep astrological analysis',pmf4t:'Exclusive Premium frequencies',pmf4s:'Access to the full 60+ frequency library',pmf5t:'Monthly ChiliDulz snack',pmf5s:'A snack surprise at your door every month',
+    ip_title:'Install ChiliDulz Alma',ip_desc:'Add to your home screen for quick access',ip_btn:'📲 INSTALL',ip_later:'Not now',
+    days:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+    mood_recs:{1:{msg:'Today may feel heavy, but remember: after rain the sun always shines. The 396 Hz frequency will help you release what weighs on you. 💜',freq:'396 Hz — Releases Fear',snack:'ChiliDulz Marshmallow (coming soon)'},2:{msg:'You are transitioning to something better. The 417 Hz frequency will clear energies that no longer serve you. ✨',freq:'417 Hz — Clears Negativity',snack:'ChiliDulz Chocolate (coming soon)'},3:{msg:'Your energy is balanced. Now is the perfect moment to boost it with 528 Hz, the frequency of self-love. 🌟',freq:'528 Hz — Repair & Love',snack:'ChiliDulz Cranberry (coming soon)'},4:{msg:'Your energy is high! The 639 Hz frequency will amplify your connection with those around you. 🔥',freq:'639 Hz — Love & Connection',snack:'ChiliDulz Agridulce (coming soon)'},5:{msg:'You are at your best! The 963 Hz frequency will connect you with your higher self. 🤩',freq:'963 Hz — Higher Self',snack:'ChiliDulz Ositos (coming soon)'}},
+    emo_override:{Estresada:{freq:'174 Hz — Natural Anesthetic'},Ansiosa:{freq:'285 Hz — Calms Anxiety'},Triste:{freq:'396 Hz — Releases Sadness'},Cansada:{freq:'528 Hz — Restores Energy'},Energizada:{freq:'741 Hz — Boosts Expression'},Motivada:{freq:'852 Hz — Amplifies Intuition'}},
+    success_notif:'🔔 Notifications enabled!',success_wa:'Welcome! You are now part of the ChiliDulz community 🌶️',success_snack:'Thanks! We will notify you when ChiliDulz Snacks is available. 🌶️',success_prem:'Thank you! We will contact you on WhatsApp soon to activate Alma Premium. ⭐',success_profile:'Astral profile saved! Your sun sign and rising are ready. ✨',success_install:'App installed! Find ChiliDulz Alma on your home screen. ✨',
+    horoscope_prompt:(sign,rising,date)=>`You are ChiliDulz Alma's expert astrologer. Write today's horoscope for ${date} for ${sign}${rising?` with rising sign in ${rising}`:''} in English. Return only exact JSON without backticks: {"text":"2-3 inspiring specific sentences for today","love":N,"work":N,"energy":N} where N is 1-5.`,
+    compat_prompt:(s1,s2)=>`You are ChiliDulz's astrologer. Analyze love compatibility between ${s1} and ${s2} in English. Only JSON without backticks: {"score":0-100,"text":"2-3 sentences about this couple's dynamic"}.`
+  },
+  pt:{nav_home:'Início',nav_astro:'Astro',nav_freq:'Frequências',nav_com:'Comunidade',
+    hero_badge:'✨ ALMA AI · BEM-ESTAR + ASTROLOGIA',hero_sub:'Sua companheira de bem-estar mental com IA.',
+    hs1:'FREQUÊNCIAS',hs2:'SIGNOS',hs3:'PERSONALIZADA',hero_cta:'✨ COMEÇAR GRÁTIS',
+    hc_alma:'Bem-estar mental com IA',hc_astro:'Horóscopo + ascendente',hc_freq:'60+ MP3 grátis',hc_com_t:'COMUNIDADE',hc_com_s:'Junte-se · ofertas exclusivas',
+    sb_tag:'🌶️ EM BREVE',sb_desc:'Amendoim picante chili-lima + doces. Entrega no mesmo dia via Rappi e DiDi em Bogotá.',sb_btn:'🔔 ME NOTIFIQUE',
+    nb_title:'Ative as notificações!',nb_desc:'Receba novas frequências e seu horóscopo diário.',nb_btn:'✅ ATIVAR',
+    alma_sub:'Sua companheira de bem-estar mental com IA',
+    ps_title:'CRIE SEU PERFIL ALMA',ps_desc:'Sua data, hora e cidade de nascimento calculam seu signo solar e ascendente para um horóscopo completamente personalizado.',
+    ps_name_lbl:'Seu nome',ps_bdate_lbl:'Data de nascimento',ps_btime_lbl:'Hora de nascimento (para calcular seu ascendente)',ps_bcity_lbl:'Cidade de nascimento',ps_privacy:'Suas informações são privadas e usadas apenas para personalizar sua experiência.',ps_save_btn:'✨ SALVAR MEU PERFIL ASTRAL',
+    sd_edit_btn:'✏️ Editar perfil',
+    mc_title:'COMO VOCÊ SE SENTE HOJE?',mc_sub:'Registre seu humor e receba recomendações personalizadas de IA',
+    streak_lbl:'dias seguidos',streak_next_lbl:'Próxima medalha:',sb_title:'Sua sequência espera por você!',sb_desc:'Registre seu humor hoje para começar uma nova sequência de bem-estar.',
+    streak_milestone_msg:(n)=>`🔥 Incrível! Você cuidou do seu bem-estar por ${n} dias seguidos. Continue assim!`,
+    ms:{1:'Mal',2:'Baixo',3:'Bem',4:'Ótimo',5:'Incrível!'},
+    emo_lbl:'QUE EMOÇÃO DESCREVE VOCÊ?',
+    emos:{Feliz:'Feliz',Estresada:'Estressada',Ansiosa:'Ansiosa',Tranquila:'Tranquila',Energizada:'Energizada',Triste:'Triste',Motivada:'Motivada',Cansada:'Cansada'},
+    btn_rec:'OBTER RECOMENDAÇÃO IA',btn_loading:'IA analisando...',btn_logged:'✅ REGISTRADO — Registrar outro',
+    ai_rec_title:'SUA RECOMENDAÇÃO',rl_freq:'Frequência',rl_snack:'Snack',btn_listen:'🎵 IR PARA FREQUÊNCIAS →',
+    hist_title:'📊 SEU PROGRESSO DE BEM-ESTAR',pt7:'dias',pt30:'dias ⭐',chart_empty:'Registre seu humor para ver seu progresso',
+    hap_lbl:'Pontuação de Felicidade',trend_up:'📈 Melhorando',trend_same:'📊 Estável',trend_dn:'📉 Trabalhando nisso',log_empty:'Ainda não há registros. Comece hoje!',
+    pl_title:'30 DIAS — PREMIUM',pl_desc:'O histórico completo de 30 dias está disponível no Alma Premium.',pl_btn:'⭐ DESBLOQUEAR — $9.99/mês',
+    prem_upsell_desc:'Desbloqueie análise IA completa, carta astral, histórico 30 dias e snack mensal.',
+    pf1:'Análise IA profunda de padrões de humor',pf2:'Histórico completo de 30 dias',pf3:'Carta Astral completa com ascendente e Lua',pf4:'Frequências Premium exclusivas',pf5:'Snack ChiliDulz mensal incluído 🌶️',
+    btn_prem_main:'⭐ ASSINAR — $9.99/MÊS',
+    astro_title:'ASTROLOGIA ALMA',astro_sub:'Horóscopo diário personalizado · Ascendente · Compatibilidade de casal',
+    anp_title:'Configure seu Perfil Astral',anp_desc:'Para seu horóscopo personalizado com signo solar e ascendente, precisamos da sua data, hora e cidade de nascimento.',anp_btn:'✨ CRIAR MEU PERFIL ASTRAL',
+    horo_today_lbl:'HORÓSCOPO DE HOJE',hm_love_lbl:'Amor',hm_work_lbl:'Trabalho',hm_energy_lbl:'Energia',horo_freq_lbl:'🎵 FREQUÊNCIA DO DIA PARA SEU SIGNO',btn_hear_astro:'🎵 OUVIR MINHA FREQUÊNCIA →',
+    rising_card_title:'↑ SEU SIGNO ASCENDENTE',rising_desc_short:'O ascendente é a máscara que mostramos ao mundo',
+    compat_title:'💕 COMPATIBILIDADE DE CASAL',compat_sub:'Selecione o signo do seu parceiro ou crush',
+    cl_best:'Ideal',cl_good:'Compatível',cl_hard:'Desafiador',
+    freq_title:'FREQUÊNCIAS DE BEM-ESTAR',freq_sub:'60+ frequências Solfeggio e sons naturais. Todas grátis.',freq_loading:'Carregando frequências...',
+    btn_dl:'⬇️ BAIXAR GRÁTIS',btn_dl_prem:'⭐ PREMIUM',
+    com_title:'JUNTE-SE À COMUNIDADE',com_sub:'Frequências · Astrologia · Alma Premium · Snacks',com_head:'CADASTRE-SE E RECEBA',
+    ben1:'Novas frequências de bem-estar toda semana',ben2:'Seu horóscopo semanal pelo WhatsApp',ben3:'Acesso antecipado ao Alma Premium',ben4:'Primeiro a receber ChiliDulz Snacks',
+    wa_name_lbl:'Seu nome',wa_join_btn:'ENTRAR AGORA',contact_title:'FALE CONOSCO',
+    pm_sub:'Desbloqueie sua jornada completa de bem-estar com IA',pm_wa_btn:'ASSINAR PELO WHATSAPP',pm_cl_btn:'Talvez depois',ppp:'/mês · Cancele quando quiser',
+    pmf1t:'Histórico completo 30 dias',pmf1s:'Analise padrões de bem-estar a longo prazo',pmf2t:'Análise IA profunda',pmf2s:'Insights e recomendações semanais',pmf3t:'Carta Astral completa',pmf3s:'Ascendente, Lua e análise astrológica profunda',pmf4t:'Frequências Premium exclusivas',pmf4s:'Acesso a toda a biblioteca de 60+ frequências',pmf5t:'Snack ChiliDulz mensal',pmf5s:'Uma surpresa de snacks na sua porta todo mês',
+    ip_title:'Instale ChiliDulz Alma',ip_desc:'Adicione ao seu ecrã inicial para acesso rápido',ip_btn:'📲 INSTALAR',ip_later:'Agora não',
+    days:['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'],
+    mood_recs:{1:{msg:'Hoje pode parecer pesado, mas lembre-se: depois da chuva sempre sai o sol. A frequência 396 Hz vai te ajudar a soltar o que te pesa. 💜',freq:'396 Hz — Libera o medo',snack:'ChiliDulz Marshmallow (em breve)'},2:{msg:'Você está em transição para algo melhor. A frequência 417 Hz vai limpar as energias que não te servem mais. ✨',freq:'417 Hz — Elimina negatividade',snack:'ChiliDulz Chocolate (em breve)'},3:{msg:'Sua energia está equilibrada. É o momento perfeito para potencializá-la com 528 Hz, a frequência do amor próprio. 🌟',freq:'528 Hz — Reparação e amor',snack:'ChiliDulz Cranberry (em breve)'},4:{msg:'Sua energia está alta! A frequência 639 Hz vai amplificar sua conexão com quem está ao seu redor. 🔥',freq:'639 Hz — Amor e conexão',snack:'ChiliDulz Agridulce (em breve)'},5:{msg:'Você está no seu melhor momento! A frequência 963 Hz vai te conectar com o seu Ser Superior. 🤩',freq:'963 Hz — Ser Superior',snack:'ChiliDulz Ositos (em breve)'}},
+    emo_override:{Estresada:{freq:'174 Hz — Anestésico Natural'},Ansiosa:{freq:'285 Hz — Acalma a ansiedade'},Triste:{freq:'396 Hz — Libera a tristeza'},Cansada:{freq:'528 Hz — Restaura energia'},Energizada:{freq:'741 Hz — Potencia expressão'},Motivada:{freq:'852 Hz — Amplifica intuição'}},
+    success_notif:'🔔 Notificações ativadas!',success_wa:'Bem-vinda! Você já faz parte da comunidade ChiliDulz 🌶️',success_snack:'Obrigada! Te avisaremos quando o ChiliDulz Snacks estiver disponível. 🌶️',success_prem:'Obrigada! Entraremos em contato pelo WhatsApp em breve para ativar o Alma Premium. ⭐',success_profile:'Perfil astral salvo! Seu signo solar e ascendente estão prontos. ✨',success_install:'App instalado! Encontre ChiliDulz Alma na sua tela inicial. ✨',
+    horoscope_prompt:(sign,rising,date)=>`Você é o astrólogo especialista do ChiliDulz Alma. Escreva o horóscopo de hoje ${date} para ${sign}${rising?` com ascendente em ${rising}`:''} em português brasileiro. Retorne apenas JSON exato sem backticks: {"text":"2-3 frases inspiradoras específicas para hoje","love":N,"work":N,"energy":N} onde N é 1-5.`,
+    compat_prompt:(s1,s2)=>`Você é o astrólogo do ChiliDulz. Analise a compatibilidade amorosa entre ${s1} e ${s2} em português. Apenas JSON sem backticks: {"score":0-100,"text":"2-3 frases sobre a dinâmica deste casal"}.`
+  }
+};
+
+function t(k){return L[lang]?.[k]??L.es?.[k]??k;}
+
+function setLang(l){
+  lang=l;localStorage.setItem('cdLang',l);
+  ['es','en','pt'].forEach(x=>document.getElementById('btn-'+x).classList.toggle('active',x===l));
+  applyLang();
+}
+
+const ID_MAP={
+  nav_home:'nav-home',nav_astro:'nav-astro',nav_freq:'nav-freq',nav_com:'nav-com',
+  hero_badge:'hero-badge',hero_cta:'hero-cta',hs1:'hs1',hs2:'hs2',hs3:'hs3',
+  hc_alma:'hc-alma-sub',hc_astro:'hc-astro-sub',hc_freq:'hc-freq-sub',hc_com_t:'hc-com-t',hc_com_s:'hc-com-s',
+  sb_tag:'sb-tag',sb_desc:'sb-desc',sb_btn:'sb-btn',
+  nb_title:'nb-title',nb_desc:'nb-desc',nb_btn:'nb-btn',
+  alma_sub:'alma-sub',ps_title:'ps-title',ps_desc:'ps-desc',
+  ps_name_lbl:'ps-name-lbl',ps_bdate_lbl:'ps-bdate-lbl',ps_btime_lbl:'ps-btime-lbl',ps_bcity_lbl:'ps-bcity-lbl',
+  ps_privacy:'ps-privacy',ps_save_btn:'ps-save-btn',sd_edit_btn:'sd-edit-btn',
+  mc_title:'mc-title',mc_sub:'mc-sub',emo_lbl:'emo-lbl',
+  btn_listen:'btn-listen',ai_rec_title:'ai-rec-title',rl_freq:'rl-freq',rl_snack:'rl-snack',
+  hist_title:'hist-title',pt7:'pt7',pt30:'pt30',chart_empty:'chart-empty',
+  hap_lbl:'hap-lbl',log_empty:'log-empty',
+  pl_title:'pl-title',pl_desc:'pl-desc',pl_btn:'pl-btn',
+  prem_upsell_desc:'prem-upsell-desc',pf1:'pf1',pf2:'pf2',pf3:'pf3',pf4:'pf4',pf5:'pf5',btn_prem_main:'btn-prem-main',
+  astro_title:'astro-title',astro_sub:'astro-sub',anp_title:'anp-title',anp_desc:'anp-desc',anp_btn:'anp-btn',
+  horo_today_lbl:'horo-today-lbl',hm_love_lbl:'hm-love-lbl',hm_work_lbl:'hm-work-lbl',hm_energy_lbl:'hm-energy-lbl',
+  horo_freq_lbl:'horo-freq-lbl',btn_hear_astro:'btn-hear-astro',
+  rising_card_title:'rising-card-title',rising_desc_short:'rising-desc-short',
+  compat_title:'compat-title',compat_sub:'compat-sub',cl_best:'cl-best',cl_good:'cl-good',cl_hard:'cl-hard',
+  freq_title:'freq-title',freq_sub:'freq-sub',freq_loading:'freq-loading',
+  com_title:'com-title',com_sub:'com-sub',com_head:'com-head',
+  ben1:'ben1',ben2:'ben2',ben3:'ben3',ben4:'ben4',
+  wa_name_lbl:'wa-name-lbl',wa_join_btn:'wa-join-btn',contact_title:'contact-title',
+  pm_sub:'pm-sub',pm_wa_btn:'pm-wa-btn',pm_cl_btn:'pm-cl-btn',ppp:'ppp',
+  pmf1t:'pmf1t',pmf1s:'pmf1s',pmf2t:'pmf2t',pmf2s:'pmf2s',pmf3t:'pmf3t',pmf3s:'pmf3s',
+  pmf4t:'pmf4t',pmf4s:'pmf4s',pmf5t:'pmf5t',pmf5s:'pmf5s',
+  ip_title:'ip-title',ip_desc:'ip-desc',ip_btn:'btn-ip-accept',ip_later:'ip-later',
+};
+
+function applyLang(){
+  Object.entries(ID_MAP).forEach(([k,id])=>{const el=document.getElementById(id);if(el&&L[lang]?.[k])el.textContent=L[lang][k];});
+  document.getElementById('hero-sub').textContent=t('hero_sub');
+  document.getElementById('streak-lbl').textContent=t('streak_lbl');
+  document.getElementById('streak-next-lbl').textContent=t('streak_next_lbl');
+  document.getElementById('sb-title').textContent=t('sb_title');
+  document.getElementById('sb-desc').textContent=t('sb_desc');
+  const ms=t('ms');[1,2,3,4,5].forEach(n=>{const el=document.getElementById('ms'+n);if(el)el.textContent=ms[n];});
+  const emos=t('emos');Object.keys(emos).forEach(e=>{const el=document.getElementById('el-'+e);if(el)el.textContent=emos[e];});
+  if(document.getElementById('frecuencias').classList.contains('active')){allFreqs=[];renderFreqs(currentCat);}
+  if(document.getElementById('astro').classList.contains('active'))loadAstro();
+}
+
+// PROFILE
+function initAlma(){
+  if(userProfile.birth_date){
+    document.getElementById('profile-setup-block').style.display='none';
+    document.getElementById('sign-display-block').style.display='block';
+    updateSignCard();
+  }else{
+    document.getElementById('profile-setup-block').style.display='block';
+    document.getElementById('sign-display-block').style.display='none';
+  }
+}
+
+function updateSignCard(){
+  const sign=getSign(userProfile.birth_date);
+  if(!sign)return;
+  const sunIdx=SIGNS.indexOf(sign);
+  const rising=userProfile.birth_time?getRising(userProfile.birth_time,userProfile.birth_city,sunIdx):null;
+  document.getElementById('sd-emoji').textContent=sign.emoji;
+  document.getElementById('sd-sun-name').textContent=sign[lang]||sign.es;
+  document.getElementById('sd-dates').textContent=sign.dates_es;
+  document.getElementById('sd-elem').textContent=sign.elem+' · '+sign.ruler;
+  document.getElementById('sd-rising').textContent=rising?`↑ Ascendente: ${rising[lang]||rising.es}`:(lang==='en'?'↑ Rising: Add birth time to calculate':lang==='pt'?'↑ Ascendente: Adicione hora de nascimento':'↑ Ascendente: Añade hora de nacimiento para calcular');
+}
+
+async function saveProfile(){
+  const name=document.getElementById('ps-name').value.trim();
+  const bdate=document.getElementById('ps-bdate').value;
+  const btime=document.getElementById('ps-btime').value;
+  const bcity=document.getElementById('ps-bcity').value.trim();
+  if(!bdate){alert(lang==='en'?'Birth date is required.':lang==='pt'?'Data de nascimento é obrigatória.':'La fecha de nacimiento es obligatoria.');return;}
+  const sign=getSign(bdate);
+  userProfile={name,birth_date:bdate,birth_time:btime,birth_city:bcity,sun_sign:sign?.es||'',lang};
+  localStorage.setItem('cdProfile',JSON.stringify(userProfile));
+  try{await sb('user_profiles',{method:'POST',body:JSON.stringify({user_id:userId,name,birth_date:bdate,birth_time:btime,birth_city:bcity,sun_sign:sign?.es||'',lang}),headers:{'Prefer':'resolution=merge-duplicates,return=representation'}});}catch(e){}
+  document.getElementById('profile-setup-block').style.display='none';
+  document.getElementById('sign-display-block').style.display='block';
+  updateSignCard();
+  showSuccess(t('success_profile'));
+}
+
+function editProfile(){
+  document.getElementById('sign-display-block').style.display='none';
+  document.getElementById('profile-setup-block').style.display='block';
+  if(userProfile.name)document.getElementById('ps-name').value=userProfile.name;
+  if(userProfile.birth_date)document.getElementById('ps-bdate').value=userProfile.birth_date;
+  if(userProfile.birth_time)document.getElementById('ps-btime').value=userProfile.birth_time;
+  if(userProfile.birth_city)document.getElementById('ps-bcity').value=userProfile.birth_city;
+}
+
+function scrollToProfile(){
+  document.getElementById('profile-setup-block').scrollIntoView({behavior:'smooth'});}
+
+// STREAK SYSTEM
+const MILESTONES=[3,7,14,30,60,100];
+
+function calcStreak(logs){
+  if(!logs.length)return{current:0,dates:[]};
+  // Get unique dates (one log per day counts)
+  const dateSet=new Set(logs.map(l=>new Date(l.created_at).toDateString()));
+  const dates=[...dateSet].map(d=>new Date(d)).sort((a,b)=>b-a);
+  const today=new Date();today.setHours(0,0,0,0);
+  const yesterday=new Date(today);yesterday.setDate(yesterday.getDate()-1);
+  const mostRecent=dates[0];mostRecent.setHours(0,0,0,0);
+  // If most recent log isn't today or yesterday, streak is broken
+  if(mostRecent.getTime()!==today.getTime()&&mostRecent.getTime()!==yesterday.getTime()){
+    return{current:0,dates,broken:true};
+  }
+  let streak=1;
+  for(let i=0;i<dates.length-1;i++){
+    const cur=new Date(dates[i]);cur.setHours(0,0,0,0);
+    const next=new Date(dates[i+1]);next.setHours(0,0,0,0);
+    const diffDays=Math.round((cur-next)/86400000);
+    if(diffDays===1)streak++;
+    else break;
+  }
+  return{current:streak,dates,broken:false};
+}
+
+let lastKnownStreak=0;
+
+async function renderStreak(){
+  try{
+    const logs=await sb(`mood_logs?select=created_at&user_id=eq.${userId}&order=created_at.desc&limit=120`);
+    const{current,broken}=calcStreak(logs);
+    const streakCard=document.getElementById('streak-card');
+    const brokenCard=document.getElementById('streak-broken');
+    if(!logs.length){streakCard.style.display='none';brokenCard.style.display='none';return;}
+    if(current===0&&broken){
+      streakCard.style.display='none';
+      brokenCard.style.display='block';
+      document.getElementById('sb-title').textContent=t('sb_title');
+      document.getElementById('sb-desc').textContent=t('sb_desc');
+      return;
+    }
+    brokenCard.style.display='none';
+    streakCard.style.display='block';
+    document.getElementById('streak-num').textContent=current;
+    document.getElementById('streak-lbl').textContent=t('streak_lbl');
+    document.getElementById('streak-flame').textContent=current>=7?'🔥':current>=3?'✨':'🌱';
+    const nextM=MILESTONES.find(m=>m>current);
+    if(nextM){
+      document.getElementById('streak-next-lbl').textContent=t('streak_next_lbl');
+      document.getElementById('streak-next-val').textContent=`${nextM-current} ${lang==='en'?'days':lang==='pt'?'dias':'días'}`;
+      document.getElementById('streak-next-wrap').style.display='block';
+    }else{
+      document.getElementById('streak-next-wrap').style.display='none';
+    }
+    document.getElementById('badge-row').innerHTML=MILESTONES.map(m=>{
+      const unlocked=current>=m;
+      return `<div class="badge ${unlocked?'unlocked':''}"><div class="badge-icon">${unlocked?'🏆':'🔒'}</div><div class="badge-day">${m}d</div></div>`;
+    }).join('');
+    // Check for new milestone hit
+    if(MILESTONES.includes(current)&&current>lastKnownStreak){
+      setTimeout(()=>showSuccess(t('streak_milestone_msg')(current)),400);
+    }
+    lastKnownStreak=current;
+  }catch(e){}
+}
+selMoodVal=n;document.querySelectorAll('.mn').forEach(el=>el.classList.remove('active'));document.getElementById('m'+n).classList.add('active');checkReady();}
+function selEmo(e){selEmoVal=e;document.querySelectorAll('.eb').forEach(el=>el.classList.remove('active'));document.getElementById('e-'+e).classList.add('active');checkReady();}
+function checkReady(){document.getElementById('btn-rec').disabled=!(selMoodVal&&selEmoVal);}
+
+async function logMood(){
+  if(!selMoodVal||!selEmoVal)return;
+  const btn=document.getElementById('btn-rec');const btxt=document.getElementById('btn-rec-txt');
+  btxt.textContent=t('btn_loading');btn.disabled=true;
+  const recs=t('mood_recs');const ovr=t('emo_override');
+  let rec={...recs[selMoodVal]};if(ovr[selEmoVal])rec={...rec,...ovr[selEmoVal]};
+  try{
+    const ai=await callAI(`You are Alma, ChiliDulz's AI wellness companion for Latino users. The user feels ${selMoodVal}/5 and emotion: ${selEmoVal}. Write ONE warm empathetic message in ${lang==='en'?'English':lang==='pt'?'Portuguese':'Spanish'}. Max 2 short sentences. Use a positive nature metaphor. End with ONE emoji. Never mention app or products.`);
+    const msg=ai||rec.msg;
+    await sb('mood_logs',{method:'POST',body:JSON.stringify({user_id:userId,mood_score:selMoodVal,emotion:selEmoVal,ai_message:msg,frequency_rec:rec.freq,snack_rec:rec.snack})});
+    document.getElementById('ai-rec').style.display='block';
+    document.getElementById('ai-msg').textContent=msg;
+    document.getElementById('ai-freq-val').textContent=rec.freq;
+    document.getElementById('ai-snack-val').textContent=rec.snack;
+    await loadHistory(histPeriodVal);
+    await renderStreak();
+    btxt.textContent=t('btn_logged').replace('✅ ','');btn.disabled=false;
+    selMoodVal=0;selEmoVal='';document.querySelectorAll('.mn,.eb').forEach(el=>el.classList.remove('active'));
+  }catch(e){btxt.textContent=t('btn_rec');btn.disabled=false;}
+}
+
+async function callAI(prompt){
+  try{const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});const d=await r.json();return d.content?.[0]?.text?.trim()||null;}catch(e){return null;}
+}
+
+// HISTORY
+function setPeriod(days,btn){
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');histPeriodVal=days;
+  if(days===30&&!isPremium()){document.getElementById('prem-lock-30').style.display='block';loadHistory(7);}
+  else{document.getElementById('prem-lock-30').style.display='none';loadHistory(days);}
+}
+
+async function loadHistory(days){
+  try{
+    const logs=await sb(`mood_logs?select=*&user_id=eq.${userId}&order=created_at.desc&limit=${days}`);
+    if(!logs.length)return;
+    const avg=logs.reduce((a,b)=>a+b.mood_score,0)/logs.length;
+    document.getElementById('hap-score').textContent=Math.round(avg*20)+'%';
+    const dArr=t('days');
+    const chart=[...logs].reverse().slice(-7);
+    document.getElementById('mood-chart').innerHTML=chart.map(log=>{
+      const d=new Date(log.created_at);const h=Math.round(log.mood_score/5*100);
+      return `<div class="mbar-wrap"><div class="mbar-val">${log.mood_score}</div><div class="mbar" style="height:${h}%"></div><div class="mbar-day">${dArr[d.getDay()]}</div></div>`;
+    }).join('');
+    if(logs.length>=3){
+      const r=logs.slice(0,3).reduce((a,b)=>a+b.mood_score,0)/3;
+      const o=logs.slice(-3).reduce((a,b)=>a+b.mood_score,0)/3;
+      const tr=document.getElementById('hap-trend');
+      if(r>o+0.3){tr.textContent=t('trend_up');tr.className='hap-tr tr-up';}
+      else if(r<o-0.3){tr.textContent=t('trend_dn');tr.className='hap-tr tr-dn';}
+      else{tr.textContent=t('trend_same');tr.className='hap-tr tr-same';}
+    }
+    const emojis={1:'😔',2:'😕',3:'😐',4:'😊',5:'🤩'};
+    const emos=t('emos');
+    document.getElementById('log-list').innerHTML=logs.slice(0,isPremium()?30:5).map(log=>{
+      const d=new Date(log.created_at);
+      return `<div class="log-item"><div class="li-icon">${emojis[log.mood_score]}</div><div class="li-info"><div class="li-emo">${emos[log.emotion]||log.emotion}</div><div class="li-time">${d.toLocaleDateString()} · ${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>${log.ai_message?`<div class="li-msg">${log.ai_message}</div>`:''}</div><div class="li-score">${log.mood_score}/5</div></div>`;
+    }).join('');
+  }catch(e){}
+}
+
+// ASTROLOGY
+async function loadAstro(){
+  const hasProfile=!!userProfile.birth_date;
+  document.getElementById('astro-no-profile').style.display=hasProfile?'none':'block';
+  document.getElementById('astro-content').style.display=hasProfile?'block':'none';
+  if(!hasProfile)return;
+  const sign=getSign(userProfile.birth_date);
+  if(!sign)return;
+  const sunIdx=SIGNS.indexOf(sign);
+  const rising=userProfile.birth_time?getRising(userProfile.birth_time,userProfile.birth_city,sunIdx):null;
+  // Update header
+  document.getElementById('astro-sign-emoji').textContent=sign.emoji;
+  document.getElementById('astro-sign-name').textContent=(sign[lang]||sign.es).toUpperCase();
+  document.getElementById('astro-sign-dates').textContent=sign.dates_es;
+  document.getElementById('horo-freq-val').textContent=sign.freq_es;
+  document.getElementById('astro-rising-display').textContent=rising?`↑ Ascendente: ${rising[lang]||rising.es}`:'↑ Añade hora de nacimiento';
+  // Rising card
+  if(rising){
+    document.getElementById('rising-info-card').style.display='block';
+    document.getElementById('rising-emoji').textContent=rising.emoji;
+    document.getElementById('rising-name').textContent=rising[lang]||rising.es;
+    document.getElementById('rising-meaning').textContent=rising.rising_es;
+  }
+  // Load horoscope
+  await loadHoroscope(sign,rising);
+  // Build compat grid
+  buildCompatGrid(sign);
+}
+
+async function loadHoroscope(sign,rising){
+  const today=new Date().toLocaleDateString();
+  const ckey=(sign[lang]||sign.es)+today+lang;
+  if(horoCache[ckey]){renderHoro(horoCache[ckey]);return;}
+  document.getElementById('horo-text').innerHTML='<div class="spinner" style="margin:10px auto;"></div>';
+  const prompt=L[lang]?.horoscope_prompt?.(sign[lang]||sign.es,rising?rising[lang]||rising.es:null,today)||L.es.horoscope_prompt(sign.es,rising?.es||null,today);
+  try{
+    const raw=await callAI(prompt);
+    if(raw){const data=JSON.parse(raw.replace(/```json|```/g,'').trim());horoCache[ckey]=data;renderHoro(data);}
+    else throw new Error('no data');
+  }catch(e){document.getElementById('horo-text').textContent=lang==='en'?'Your stars are aligning... try again in a moment.':lang==='pt'?'Seus astros estão se alinhando... tente novamente.':'Tus astros se están alineando... intenta de nuevo en un momento.';}
+}
+
+function renderHoro(data){
+  document.getElementById('horo-text').textContent=data.text||'';
+  const stars=n=>'⭐'.repeat(Math.min(5,Math.max(1,Math.round(n||3))));
+  document.getElementById('hm-love').textContent=stars(data.love);
+  document.getElementById('hm-work').textContent=stars(data.work);
+  document.getElementById('hm-energy').textContent=stars(data.energy);
+}
+
+function buildCompatGrid(mySign){
+  document.getElementById('compat-grid').innerHTML=SIGNS.map(s=>{
+    const sname=s.es;let cls='';
+    if(mySign.best.includes(sname))cls='best';
+    else if(mySign.good.includes(sname))cls='good';
+    else if(mySign.hard.includes(sname))cls='hard';
+    return `<div class="cs ${cls}" onclick="checkCompat('${mySign.es}','${sname}','${mySign[lang]||mySign.es}','${s[lang]||s.es}','${mySign.sym}','${s.sym}','${mySign.emoji}','${s.emoji}')"><div class="cs-icon">${s.emoji}</div><div class="cs-name">${s[lang]||s.es}</div></div>`;
+  }).join('');
+}
+
+async function checkCompat(s1es,s2es,s1d,s2d,sym1,sym2,em1,em2){
+  const ckey=s1es+s2es+lang;
+  const resultEl=document.getElementById('compat-result');
+  resultEl.style.display='block';
+  document.getElementById('cr-signs').textContent=`${em1} + ${em2}`;
+  document.getElementById('cr-title').textContent=`${s1d} + ${s2d}`;
+  document.getElementById('cr-score').textContent='...';
+  document.getElementById('cr-text').textContent='';
+  if(compatCache[ckey]){renderCompat(compatCache[ckey],s1d,s2d,em1,em2);return;}
+  const prompt=L[lang]?.compat_prompt?.(s1d,s2d)||L.es.compat_prompt(s1es,s2es);
+  try{
+    const raw=await callAI(prompt);
+    if(raw){const data=JSON.parse(raw.replace(/```json|```/g,'').trim());compatCache[ckey]=data;renderCompat(data,s1d,s2d,em1,em2);}
+  }catch(e){}
+}
+
+function renderCompat(data,s1d,s2d,em1,em2){
+  document.getElementById('cr-signs').textContent=`${em1} + ${em2}`;
+  document.getElementById('cr-title').textContent=`${s1d} + ${s2d}`;
+  document.getElementById('cr-score').textContent=(data.score||0)+'%';
+  document.getElementById('cr-text').textContent=data.text||'';
+}
+
+// FREQUENCIES
+async function renderFreqs(cat){
+  currentCat=cat||'all';
+  const c=document.getElementById('freq-list');
+  c.innerHTML=`<div class="loading-box"><div class="spinner"></div>${t('freq_loading')}</div>`;
+  try{
+    if(!allFreqs.length)allFreqs=await sb('frequencies?select=*&active=eq.true&order=category,id');
+    const list=cat&&cat!=='all'?allFreqs.filter(f=>f.category===cat):allFreqs;
+    if(!list.length){c.innerHTML=`<div class="loading-box">🎵</div>`;return;}
+    const icons={sueno:'😴',meditacion:'🧘',sanacion:'💚',emocional:'❤️',chakras:'🌈',espiritual:'✨',enfoque:'🧠',energia:'⚡',naturaleza:'🌲',general:'🎵'};
+    c.innerHTML=list.map(f=>{
+      const isPrem=f.is_premium&&!isPremium();
+      return `<div class="fc"><div class="fc-top"><div class="fc-icon">${f.emoji||icons[f.category]||'🎵'}</div><div style="flex:1;"><div class="fc-title">${f.title}${f.is_premium?`<span class="fc-prem-badge">⭐</span>`:''}</div><div class="fc-hz">${f.frequency_hz||''}</div><div class="fc-benefit">${f.benefit||''}</div></div></div>${f.description?`<div class="fc-desc">${f.description}</div>`:''}<div class="fc-actions">${isPrem?`<button class="btn-dl-prem" onclick="openPremModal()">⭐ ${t('btn_dl_prem')}</button>`:`<a class="btn-dl" href="${f.file_url}" download target="_blank">⬇️ ${t('btn_dl')}</a>`}</div><div class="fc-dls">📥 ${f.downloads||0}</div></div>`;
+    }).join('');
+  }catch(e){c.innerHTML=`<div class="loading-box">❌ Error loading</div>`;}
+}
+
+function filterFreq(cat,btn){document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');allFreqs=[];renderFreqs(cat);}
+
+// NAV
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const idx=['inicio','alma','astro','snacks','frecuencias','comunidad'].indexOf(id);
+  if(idx>=0)document.querySelectorAll('nav button')[idx].classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='alma'){initAlma();loadHistory(histPeriodVal);renderStreak();}
+  if(id==='astro')loadAstro();
+  if(id==='snacks')renderProducts();
+  if(id==='frecuencias'){allFreqs=[];renderFreqs(currentCat);}
+}
+
+// PREMIUM
+function openPremModal(){document.getElementById('prem-modal').classList.add('show');}
+function closePremModal(){document.getElementById('prem-modal').classList.remove('show');}
+function subscribePremium(){
+  closePremModal();
+  const msgs={es:'⭐ Hola! Quiero suscribirme a *Alma Premium* de ChiliDulz por $9.99/mes. Por favor envíame los detalles de pago. 🙏',en:'⭐ Hi! I want to subscribe to ChiliDulz *Alma Premium* for $9.99/month. Please send me payment details. 🙏',pt:'⭐ Olá! Quero assinar o *Alma Premium* do ChiliDulz por $9.99/mês. Por favor envie-me os detalhes de pagamento. 🙏'};
+  window.open(`https://wa.me/573016880127?text=${encodeURIComponent(msgs[lang]||msgs.es)}`,'_blank');
+  showSuccess(t('success_prem'));
+}
+
+// COMMUNITY
+function registerWA(){
+  const n=document.getElementById('wa-nombre').value.trim();
+  const num=document.getElementById('wa-numero').value.trim();
+  if(!n||!num){alert(lang==='en'?'Please enter your name and WhatsApp.':lang==='pt'?'Por favor insira seu nome e WhatsApp.':'Por favor ingresa tu nombre y WhatsApp.');return;}
+  const sign=userProfile.birth_date?getSign(userProfile.birth_date):null;
+  const msgs={
+    es:`🌶️ Hola! Me llamo *${n}* y quiero unirme a la comunidad ChiliDulz!\n\nMi WhatsApp: ${num}${sign?`\nMi signo: ${sign.es} ${sign.emoji}`:''}\n\n✨ Quiero recibir frecuencias, horóscopo y acceso a Alma Premium! 💪`,
+    en:`🌶️ Hi! My name is *${n}* and I want to join the ChiliDulz community!\n\nMy WhatsApp: ${num}${sign?`\nMy sign: ${sign.en} ${sign.emoji}`:''}\n\n✨ I want frequencies, horoscope and Alma Premium access! 💪`,
+    pt:`🌶️ Olá! Meu nome é *${n}* e quero entrar na comunidade ChiliDulz!\n\nMeu WhatsApp: ${num}${sign?`\nMeu signo: ${sign.pt} ${sign.emoji}`:''}\n\n✨ Quero frequências, horóscopo e acesso ao Alma Premium! 💪`
+  };
+  window.open(`https://wa.me/573016880127?text=${encodeURIComponent(msgs[lang]||msgs.es)}`,'_blank');
+  showSuccess(t('success_wa'));
+}
+
+function notifySnack(){
+  const msgs={es:'🌶️ ¡Quiero ser notificado cuando ChiliDulz Snacks esté disponible!',en:'🌶️ I want to be notified when ChiliDulz Snacks is available!',pt:'🌶️ Quero ser notificado quando o ChiliDulz Snacks estiver disponível!'};
+  window.open(`https://wa.me/573016880127?text=${encodeURIComponent(msgs[lang]||msgs.es)}`,'_blank');
+  showSuccess(t('success_snack'));
+}
+
+// NOTIFICATIONS
+async function initNotifs(){
+  if(!('Notification'in window))return;
+  if(Notification.permission==='default')setTimeout(()=>{document.getElementById('notif-bar').style.display='flex';},5000);
+  else if(Notification.permission==='granted')getFCMToken();
+}
+async function requestNotifPerm(){
+  document.getElementById('notif-bar').style.display='none';
+  const p=await Notification.requestPermission();
+  if(p==='granted'){await getFCMToken();showSuccess(t('success_notif'));}
+}
+async function getFCMToken(){
+  try{const reg=await navigator.serviceWorker.register('/firebase-messaging-sw.js');const tok=await fcm.getToken({vapidKey:VAPID,serviceWorkerRegistration:reg});if(tok)await sb('subscribers',{method:'POST',body:JSON.stringify({token:tok})}).catch(()=>{});}catch(e){}
+}
+fcm.onMessage(p=>{const{title,body}=p.notification||{};if(Notification.permission==='granted')new Notification(title||'ChiliDulz Alma',{body:body||'',icon:'/icon-192.png'});});
+
+// PWA INSTALL — universal, works on iOS Safari + Android Chrome + Desktop
+let deferredPrompt=null;
+const INSTALL_KEY='cdInstallDismissed';
+const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
+const isInStandaloneMode=()=>window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
+
+function showInstallOverlay(){
+  // Don't show if already installed or dismissed recently
+  if(isInStandaloneMode())return;
+  const dismissed=localStorage.getItem(INSTALL_KEY);
+  if(dismissed){
+    const daysSince=(Date.now()-parseInt(dismissed))/(1000*60*60*24);
+    if(daysSince<3)return; // Show again after 3 days
+  }
+  const overlay=document.getElementById('install-overlay');
+  if(!overlay)return;
+  // Show iOS-specific or Android-specific UI
+  if(isIOS()){
+    const iosSteps=document.getElementById('ios-steps');
+    const installBtn=document.getElementById('btn-install-now');
+    if(iosSteps)iosSteps.style.display='block';
+    if(installBtn)installBtn.style.display='none';
+  }else if(deferredPrompt){
+    const installBtn=document.getElementById('btn-install-now');
+    if(installBtn)installBtn.style.display='block';
+  }else{
+    // Desktop or unsupported - still show info
+    const installBtn=document.getElementById('btn-install-now');
+    if(installBtn){installBtn.style.display='block';installBtn.textContent='📲 '+t('install_btn_text')||'ABRIR INSTRUCCIONES';}
+  }
+  overlay.classList.add('show');
+}
+
+async function triggerInstall(){
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    const{outcome}=await deferredPrompt.userChoice;
+    deferredPrompt=null;
+    dismissInstall();
+    if(outcome==='accepted')showSuccess(t('success_install')||'¡App instalada! Encuéntrala en tu pantalla de inicio. ✨');
+  }
+}
+
+function dismissInstall(){
+  const overlay=document.getElementById('install-overlay');
+  if(overlay)overlay.classList.remove('show');
+  localStorage.setItem(INSTALL_KEY,Date.now().toString());
+}
+
+// Android Chrome: capture install event
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  deferredPrompt=e;
+});
+
+// Show prompt after 3 seconds on first visit
+setTimeout(showInstallOverlay, 3000);
+
+window.addEventListener('appinstalled',()=>{
+  dismissInstall();
+  deferredPrompt=null;
+  showSuccess('¡App instalada! Encuentra ChiliDulz Alma en tu pantalla de inicio. ✨');
+});
+
+// SUCCESS
+function showSuccess(m){document.getElementById('ov-msg').textContent=m;document.getElementById('success-ov').classList.add('show');}
+function closeSuccess(){document.getElementById('success-ov').classList.remove('show');}
+
+// PRODUCTS & ORDERING
+let allProducts=[];
+let currentOrderProduct=null;
+
+async function renderProducts(){
+  const grid=document.getElementById('product-grid');
+  if(!grid)return;
+  grid.innerHTML='<div class="loading-box" style="grid-column:1/-1;"><div class="spinner"></div></div>';
+  try{
+    allProducts=await sb('products?select=*&active=eq.true&order=id');
+    if(!allProducts.length){
+      grid.innerHTML=`<div class="no-products" style="grid-column:1/-1;">
+        <div class="np-icon">🌶️</div>
+        <h3>${lang==='en'?'Coming Soon!':lang==='pt'?'Em Breve!':'¡Próximamente!'}</h3>
+        <p>${lang==='en'?'Our delicious snacks are on their way. Join the community to be notified first!':lang==='pt'?'Nossos deliciosos snacks estão a caminho!':'¡Nuestros deliciosos snacks están en camino. Únete a la comunidad para ser el primero en saber!'}</p>
+      </div>`;
+      return;
+    }
+    grid.innerHTML=allProducts.map((p,i)=>{
+      const variants=Array.isArray(p.variants)&&p.variants.length?p.variants:[];
+      const lowestPrice=variants.length?Math.min(...variants.map(v=>v.price)):p.price||0;
+      const imgHtml=p.image
+        ?`<img src="${p.image}" onerror="this.parentElement.innerHTML='${p.emoji||'🌶️'}'" />`
+        :(p.emoji||'🌶️');
+      return `<div class="product-card" onclick="openOrderModal(${i})">
+        <div class="product-img">${imgHtml}</div>
+        <div class="product-info">
+          <div class="product-name">${p.name}</div>
+          <div class="product-desc">${p.description||''}</div>
+          <div class="product-price">desde $${Number(lowestPrice).toLocaleString('es-CO')}</div>
+          <div class="product-sizes">${variants.map(v=>`<span class="size-btn">${v.size}</span>`).join('')}</div>
+          <button class="btn-order-product">🛒 ${lang==='en'?'ORDER NOW':lang==='pt'?'PEDIR AGORA':'PEDIR AHORA'}</button>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){grid.innerHTML='<div class="loading-box" style="grid-column:1/-1;">❌ Error loading products</div>';}
+}
+
+function openOrderModal(productIdx){
+  currentOrderProduct=allProducts[productIdx];
+  if(!currentOrderProduct)return;
+  const p=currentOrderProduct;
+  const variants=Array.isArray(p.variants)&&p.variants.length?p.variants:[];
+  document.getElementById('om-product-emoji').textContent=p.emoji||'🌶️';
+  document.getElementById('om-product-name').textContent=p.name;
+  // Populate size dropdown
+  const sel=document.getElementById('om-size');
+  sel.innerHTML=`<option value="">— ${lang==='en'?'Select size':'Selecciona tamaño'} —</option>`
+    +variants.map(v=>`<option value="${v.price}" data-size="${v.size}">${v.size} — $${Number(v.price).toLocaleString('es-CO')} COP</option>`).join('');
+  updateOrderTotal();
+  document.getElementById('order-modal').classList.add('show');
+}
+
+function updateOrderTotal(){
+  const sel=document.getElementById('om-size');
+  const price=parseInt(sel.value)||0;
+  const shipping=8500;
+  const total=price+shipping;
+  document.getElementById('om-product-price').textContent=price?`$${Number(price).toLocaleString('es-CO')}`:'—';
+  document.getElementById('ot-amount').textContent=price?`$${Number(total).toLocaleString('es-CO')} COP`:'—';
+}
+
+function closeOrderModal(){
+  document.getElementById('order-modal').classList.remove('show');
+  ['om-name','om-phone','om-address','om-city','om-neighborhood','om-state','om-notes'].forEach(id=>{document.getElementById(id).value='';});
+}
+
+function sendOrder(){
+  const p=currentOrderProduct;
+  const name=document.getElementById('om-name').value.trim();
+  const phone=document.getElementById('om-phone').value.trim();
+  const address=document.getElementById('om-address').value.trim();
+  const city=document.getElementById('om-city').value.trim();
+  const neighborhood=document.getElementById('om-neighborhood').value.trim();
+  const state=document.getElementById('om-state').value.trim();
+  const sel=document.getElementById('om-size');
+  const sizeOpt=sel.options[sel.selectedIndex];
+  const sizeName=sizeOpt?.dataset?.size||'';
+  const price=parseInt(sel.value)||0;
+  const notes=document.getElementById('om-notes').value.trim();
+  if(!name||!phone||!address||!city||!price){
+    alert(lang==='en'?'Please fill in all required fields.':lang==='pt'?'Por favor preencha todos os campos obrigatórios.':'Por favor completa todos los campos obligatorios.');
+    return;
+  }
+  const shipping=8500;
+  const total=price+shipping;
+  const msg=`🌶️ *NUEVO PEDIDO CHILIDULZ* 🌶️
+
+📦 *Producto:* ${p.name} ${sizeName}
+💰 *Precio producto:* $${Number(price).toLocaleString('es-CO')} COP
+🚚 *Envío:* $${Number(shipping).toLocaleString('es-CO')} COP
+💵 *TOTAL:* $${Number(total).toLocaleString('es-CO')} COP
+
+👤 *Nombre:* ${name}
+📱 *Teléfono:* ${phone}
+📍 *Dirección:* ${address}
+🏘️ *Barrio:* ${neighborhood||'No indicado'}
+🏙️ *Ciudad:* ${city}
+🗺️ *Departamento:* ${state||'No indicado'}
+${notes?`💬 *Notas:* ${notes}`:''}
+
+🌶️ _ChiliDulz — Dulce. Picante. Adictivo._`;
+  window.open(`https://wa.me/573016880127?text=${encodeURIComponent(msg)}`,'_blank');
+  closeOrderModal();
+  showSuccess(lang==='en'?`Thanks ${name}! Your order was sent. We'll confirm on WhatsApp shortly! 🌶️`:lang==='pt'?`Obrigada ${name}! Seu pedido foi enviado. Confirmaremos pelo WhatsApp em breve! 🌶️`:`¡Gracias ${name}! Tu pedido fue enviado. ¡Te confirmamos por WhatsApp pronto! 🌶️`);
+}
+
+// Also wire up the AI rec "order snack" button to open snacks section
+
+// ADMIN — multiple triggers for reliability
+let logoTaps=0,tapTmr,longTmr;
+const logoEl=document.getElementById('logo-tap');
+// Tap 5x fast
+logoEl.addEventListener('click',()=>{logoTaps++;clearTimeout(tapTmr);tapTmr=setTimeout(()=>logoTaps=0,3000);if(logoTaps>=5){logoTaps=0;openAdminLogin();}});
+// Long press 3 seconds
+logoEl.addEventListener('touchstart',e=>{longTmr=setTimeout(()=>{openAdminLogin();},3000);},{passive:true});
+logoEl.addEventListener('touchend',()=>clearTimeout(longTmr));
+logoEl.addEventListener('touchmove',()=>clearTimeout(longTmr));
+// Type "admin" on keyboard (desktop)
+let typed='';
+document.addEventListener('keydown',e=>{typed+=e.key.toLowerCase();if(typed.includes('admin')){typed='';openAdminLogin();}if(typed.length>10)typed=typed.slice(-10);});
+
+
+const getPwd=()=>localStorage.getItem(AK)||DP;
+function openAdminLogin(){document.getElementById('adm-pwd').value='';document.getElementById('al-err').style.display='none';document.getElementById('admin-login').style.display='flex';}
+function closeAdminLogin(){document.getElementById('admin-login').style.display='none';}
+function doLogin(){if(document.getElementById('adm-pwd').value===getPwd()){closeAdminLogin();openAdminPanel();}else{document.getElementById('al-err').style.display='block';document.getElementById('adm-pwd').value='';}}
+
+async function openAdminPanel(){
+  document.getElementById('customer-app').style.display='none';
+  document.getElementById('admin-panel').classList.add('show');
+  await Promise.all([loadAdminProducts(),loadAdminFreqs(),loadCampHist()]);
+  try{document.getElementById('sub-count').textContent=await(async()=>{const r=await fetch(`${SB}/rest/v1/subscribers?select=count`,{headers:{'apikey':SK,'Authorization':`Bearer ${SK}`,'Prefer':'count=exact'}});return r.headers.get('content-range')?.split('/')[1]||'0';})();}catch(e){}
+}
+function logoutAdmin(){document.getElementById('admin-panel').classList.remove('show');document.getElementById('customer-app').style.display='block';showSection('inicio');}
+
+// PRODUCT ADMIN
+let curProductId=null;
+
+async function loadAdminProducts(){
+  const list=document.getElementById('adm-product-list');
+  if(!list)return;
+  try{
+    const products=await sb('products?select=*&active=eq.true&order=id');
+    list.innerHTML=products.map(p=>`
+      <div class="adm-item">
+        <div class="adm-item-hdr">
+          <div class="adm-item-name">${p.emoji||'🌶️'} ${p.name}</div>
+          <div class="adm-item-hz">$${Number(p.price||0).toLocaleString('es-CO')}</div>
+        </div>
+        <div class="adm-item-desc">${p.description||''}</div>
+        <div class="adm-btns">
+          <button class="btn-ae" onclick="openProductModal(${p.id})">✏️ EDIT</button>
+          <button class="btn-ad" onclick="delProduct(${p.id})">🗑</button>
+        </div>
+      </div>`).join('')||'<p style="color:#AAA;text-align:center;padding:12px;">No products yet. Add your first!</p>';
+  }catch(e){}
+}
+
+async function openProductModal(id){
+  curProductId=id;
+  document.getElementById('pm-title').textContent=id?'EDIT PRODUCT':'ADD PRODUCT';
+  ['pm-name','pm-desc','pm-emoji','pm-image','pm-price','pm-variants'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('pm-wa').value='573016880127';
+  if(id){
+    try{
+      const p=(await sb(`products?id=eq.${id}`))[0];
+      document.getElementById('pm-name').value=p.name||'';
+      document.getElementById('pm-desc').value=p.description||'';
+      document.getElementById('pm-emoji').value=p.emoji||'';
+      document.getElementById('pm-image').value=p.image||'';
+      document.getElementById('pm-price').value=p.price||'';
+      if(Array.isArray(p.variants)&&p.variants.length){
+        document.getElementById('pm-variants').value=p.variants.map(v=>`${v.size}=${v.price}`).join(',');
+      }
+    }catch(e){alert('Error loading product.');return;}
+  }
+  document.getElementById('product-modal').style.display='flex';
+}
+
+function closeProductModal(){document.getElementById('product-modal').style.display='none';}
+
+async function saveProduct(){
+  const name=document.getElementById('pm-name').value.trim();
+  if(!name){alert('Product name required.');return;}
+  const variantStr=document.getElementById('pm-variants').value.trim();
+  let variants=[];
+  if(variantStr){
+    variants=variantStr.split(',').map(v=>{
+      const[size,price]=v.trim().split('=');
+      return{size:size?.trim()||'',price:parseInt(price)||0};
+    }).filter(v=>v.size&&v.price);
+  }
+  const p={
+    name,
+    description:document.getElementById('pm-desc').value.trim(),
+    emoji:document.getElementById('pm-emoji').value.trim(),
+    image:document.getElementById('pm-image').value.trim(),
+    price:parseInt(document.getElementById('pm-price').value)||0,
+    variants:variants.length?variants:[],
+    category:'snacks',
+    active:true
+  };
+  try{
+    curProductId
+      ?await sb(`products?id=eq.${curProductId}`,{method:'PATCH',body:JSON.stringify(p)})
+      :await sb('products',{method:'POST',body:JSON.stringify(p)});
+    closeProductModal();
+    await loadAdminProducts();
+    allProducts=[];
+    alert('✅ Product saved! Customers see it immediately.');
+  }catch(e){alert('❌ Error: '+e.message);}
+}
+
+async function delProduct(id){
+  if(!confirm('Delete this product?'))return;
+  try{await sb(`products?id=eq.${id}`,{method:'DELETE'});allProducts=[];await loadAdminProducts();}
+  catch(e){alert('❌ Error.');}
+}
+
+  const list=document.getElementById('adm-freq-list');
+  const st=document.getElementById('sync-st');
+  st.className='sync-st sload';st.textContent='⏳ Connecting...';
+  try{
+    const freqs=await sb('frequencies?select=*&active=eq.true&order=category,id');
+    st.className='sync-st sok';st.textContent=`✅ Connected — ${freqs.length} frequencies loaded`;
+    list.innerHTML=freqs.map(f=>`<div class="adm-item"><div class="adm-item-hdr"><div class="adm-item-name">${f.emoji||'🎵'} ${f.title}${f.is_premium?' ⭐':''}</div><div class="adm-item-hz">${f.frequency_hz||''}</div></div><div class="adm-item-desc">${f.category||''} · 📥${f.downloads||0}</div><div class="adm-btns"><button class="btn-ae" onclick="openEditModal(${f.id})">✏️ EDIT</button><button class="btn-ad" onclick="delFreq(${f.id})">🗑</button></div></div>`).join('')||'<p style="color:#AAA;text-align:center;padding:16px;">No frequencies yet. Add your first!</p>';
+  }catch(e){st.className='sync-st serr';st.textContent='❌ Connection failed.';}
+}
+
+let curEditId=null;
+async function openEditModal(id){
+  curEditId=id;
+  document.getElementById('em-title').textContent=id?'EDIT FREQUENCY':'ADD FREQUENCY';
+  ['em-name','em-hz','em-benefit','em-desc','em-emoji','em-url'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('em-cat').value='sanacion';document.getElementById('em-prem').value='false';
+  if(id){try{const f=(await sb(`frequencies?id=eq.${id}`))[0];document.getElementById('em-name').value=f.title||'';document.getElementById('em-hz').value=f.frequency_hz||'';document.getElementById('em-benefit').value=f.benefit||'';document.getElementById('em-desc').value=f.description||'';document.getElementById('em-cat').value=f.category||'sanacion';document.getElementById('em-emoji').value=f.emoji||'';document.getElementById('em-url').value=f.file_url||'';document.getElementById('em-prem').value=f.is_premium?'true':'false';}catch(e){alert('Error.');return;}}
+  document.getElementById('edit-modal').style.display='flex';
+}
+function closeEditModal(){document.getElementById('edit-modal').style.display='none';}
+
+async function saveFreq(){
+  const title=document.getElementById('em-name').value.trim();
+  const url=document.getElementById('em-url').value.trim();
+  if(!title||!url){alert('Title and URL required.');return;}
+  const f={title,frequency_hz:document.getElementById('em-hz').value.trim(),benefit:document.getElementById('em-benefit').value.trim(),description:document.getElementById('em-desc').value.trim(),category:document.getElementById('em-cat').value,emoji:document.getElementById('em-emoji').value.trim(),file_url:url,is_premium:document.getElementById('em-prem').value==='true',active:true};
+  try{curEditId?await sb(`frequencies?id=eq.${curEditId}`,{method:'PATCH',body:JSON.stringify(f)}):await sb('frequencies',{method:'POST',body:JSON.stringify(f)});closeEditModal();allFreqs=[];await loadAdminFreqs();alert('✅ Saved! Customers see it immediately.');}
+  catch(e){alert('❌ Error: '+e.message);}
+}
+
+async function delFreq(id){if(!confirm('Delete?'))return;try{await sb(`frequencies?id=eq.${id}`,{method:'DELETE'});allFreqs=[];await loadAdminFreqs();}catch(e){alert('❌ Error.');}}
+
+async function sendCampaign(){
+  const title=document.getElementById('ct').value.trim();const body=document.getElementById('cb').value.trim();
+  if(!title||!body){alert('Title and message required.');return;}
+  const count=document.getElementById('sub-count').textContent;
+  if(!confirm(`Send to ${count} subscribers?`))return;
+  try{await sb('campaigns',{method:'POST',body:JSON.stringify({title,body,image_url:document.getElementById('ci').value.trim(),instagram_url:document.getElementById('cig').value.trim(),sent_count:parseInt(count)||0})});alert('✅ Campaign saved!');['ct','cb','ci','cig'].forEach(id=>document.getElementById(id).value='');await loadCampHist();}
+  catch(e){alert('❌ Error: '+e.message);}
+}
+
+async function loadCampHist(){
+  const c=document.getElementById('camp-hist');
+  try{const camps=await sb('campaigns?select=*&order=created_at.desc&limit=10');c.innerHTML=camps.length?camps.map(ca=>`<div class="ch-it"><h4>${ca.title}</h4><p>${ca.body}</p><div class="meta"><span>📱${ca.sent_count}</span><span>${new Date(ca.created_at).toLocaleDateString()}</span></div></div>`).join(''):'<p style="color:#AAA;text-align:center;padding:10px;">No campaigns.</p>';}catch(e){}
+}
+
+function changePwd(){
+  const np=document.getElementById('np').value;const cp=document.getElementById('cp2').value;
+  if(!np||np.length<6){alert('Min 6 chars.');return;}
+  if(np!==cp){alert('No match.');return;}
+  localStorage.setItem(AK,np);document.getElementById('np').value='';document.getElementById('cp2').value='';alert('✅ Password changed!');
+}
+
+// INIT — wrap in DOMContentLoaded so all elements exist before JS runs
+document.addEventListener('DOMContentLoaded',()=>{
+  setLang(lang);
+  initNotifs();
+  if(window.location.hash==='#admin')setTimeout(()=>openAdminLogin(),800);
+  if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+});
+</script>
+</body>
+</html>
